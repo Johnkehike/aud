@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/css/dashboard.css" rel="stylesheet">
+
+    <link href="/vendor/aos/aos.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Add the following code to the head section of your HTML file -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+    <link href="//cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css " rel="stylesheet" id="bootstrap-css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+
+</head>
+<body>
+
+
+<div class="container mt-4 mb-4 p-3 d-flex justify-content-center">
+
+
+    <div class="card-back">
+        <div class="center-wrap">
+            <div class="section text-center">
+
+                <div id="form-container" style="display: none;">
+                    <form id="visitor-form" method="post" th:object="${user}">
+
+                        <h3>Fill below details to book a visitor</h3>
+
+                        <button id="close-form-btn" class="close">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+<!--                        <button id="close-form-btn">Hide Form</button>-->
+
+                        <div class="form-group mt-3">
+                            <input type="text" name="fname" class="form-style" placeholder="Visitor's Name" id="vname" autocomplete="off" required>
+                            <i class="input-icon uil uil-at"></i>
+                        </div>
+
+
+                        <div class="form-group mt-2">
+                            <input type="email" name="email" class="form-style" placeholder="Visitor's Email Address" id="vemail" autocomplete="off" required>
+                            <i class="input-icon uil uil-at"></i>
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <input type="tel" name="phone" class="form-style" placeholder="Visitor's Mobile Number" id="vphone" autocomplete="off" required>
+                            <i class="input-icon uil uil-at"></i>
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <input type="number" name="duration" class="form-style" placeholder="Estimated number of days to stay" id="vduration" autocomplete="off" required>
+                            <i class="input-icon uil uil-at"></i>
+                        </div>
+
+
+
+                        <div class="form-group mt-2">
+                            <input type="hidden" name="location" th:value="${session.address}" class="form-style" placeholder="Location visiting" id="vlocation" autocomplete="off" readonly required>
+                            <i class="input-icon uil uil-at"></i>
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <input type="hidden" name="resident" th:value="${session.user}" class="form-style" placeholder="Whom to See" id="resident" autocomplete="off" readonly required>
+                            <i class="input-icon uil uil-at"></i>
+                        </div>
+
+                        <div class="form-group mt-2">
+                            <input type="password" name="logpass" class="form-style" placeholder="Enter Your Password to confirm" id="userpass" min="8" autocomplete="off">
+                            <i class="input-icon uil uil-lock-alt"></i>
+                        </div>
+
+                        <button type="submit" class="btn1 btn-dark">Log Visitor</button>
+
+<!--                        <button type="submit" class="btn mt-2 btn-success">Log Visitor!</button>-->
+
+                    </form>
+
+                </div>
+
+
+
+                <div class="card-back">
+                    <div class="center-wrap">
+                        <div class="section text-center">
+
+                <div id="trans-form-container" style="display: none;">
+
+
+
+                    <form id="paymentForm">
+
+                        <h3 class="mt-3">Fill below details to pay your security due</h3>
+
+
+                        <button id="close-payform-btn" class="close">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+
+                        <div class="form-group mt-3">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email-address" placeholder="Enter Email Address"  required />
+                    </div>
+                    <div class="form-group mt-2" >
+                        <label for="amount">Amount</label>
+                        <input type="tel" id="amount" placeholder="Enter Amount" required />
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="first-name">Full Name</label>
+                        <input type="text" id="first-name" th:value="${session.user}" placeholder="Enter Name" readonly />
+                    </div>
+                    <div class="form-submit">
+                        <button type="submit" class="btn1 btn-dark" onclick="payWithPaystack()"> Make Payment </button>
+                    </div>
+                </form>
+
+                </div>
+                        </div>
+                    </div>
+
+                <script src="https://js.paystack.co/v1/inline.js"></script>
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+<!--    <div th:if="${visitors != null}">-->
+
+<!--        <div class="container">-->
+<!--            <table class="table table-bordered table-striped">-->
+
+<!--                <thead>-->
+
+<!--                <tr>-->
+<!--                    <th>Visitor Name</th>-->
+<!--                    <th>Visitor Email</th>-->
+<!--                    <th>Visitor Phone</th>-->
+<!--                    <th>Expected Day of Departure</th>-->
+<!--                    <th>Status</th>-->
+<!--                </tr>-->
+
+<!--                </thead>-->
+<!--                <tbody>-->
+<!--                &lt;!&ndash;          <tr th:each="item : ${journals}">&ndash;&gt;-->
+<!--                <tr th:each="item : ${visitors}">-->
+
+<!--                    <td th:text="${item.visitor_name}"></td>-->
+<!--                    <td th:text="${item.visitor_email}"></td>-->
+<!--                    <td th:text="${item.visitor_phone}"></td>-->
+<!--                    <td th:text="${item.expectedDepartureDate}"></td>-->
+<!--                    <td th:text="${item.entry_status}"></td>-->
+<!--                    <td>-->
+<!--                        <div th:if="${item.entry_status eq 'Approved'}"  role="group">-->
+<!--                            <a th:href="@{/archive/edit/{id}(id=${item.id})}" class="btn btn-group-sm" th:text="Checkout"></a>-->
+<!--                        </div>-->
+
+<!--                        <div th:if="${item.entry_status eq 'Pending'}" role="group">-->
+<!--                            <a th:href="@{/archive/edit/{id}(id=${item.id})}" class="btn btn-group-sm" th:text="Edit"></a>-->
+
+<!--                            <a th:href="@{/archive/inactive/{id}(id=${item.id})}" onclick="return confirm('Do you want to Activate the ATM?', 'yes');" class="btn btn-group-sm" th:method="put" th:text="Delete Log"></a>-->
+<!--                        </div>-->
+
+<!--                    </td>-->
+<!--                </tr>-->
+<!--                </tbody>-->
+
+<!--                </thead>-->
+
+<!--            </table>-->
+
+<!--        </div>-->
+<!--    </div>-->
+
+
+
+
+
+
+
+
+
+    <div id="main-screen" class="card p-4" style="background-color: #000000; color: white;">
+        <div class=" image d-flex flex-column justify-content-center align-items-center">
+            <button class="btn btn-secondary">
+<!--                <img src="/Nwoji David.jpg" height="100" width="100" />-->
+                <img th:src="${session.url}" height="100" width="100" />
+            </button>
+            <span class="name mt-3" th:text="${session.user}"></span>
+
+<!--            <span class="name mt-3">Eleanor Pena</span>-->
+<!--            <span class="idd">@eleanorpena</span>-->
+            <div class="d-flex flex-row justify-content-center align-items-center gap-2">
+<!--                <span class="idd1">Oxc4c16a645_b21a</span>-->
+<!--                <span><i class="fa fa-copy"></i></span>-->
+            </div>
+            <div class="d-flex flex-row justify-content-center align-items-center mt-3">
+                <span class="number">0 <span class="follow">/12 months paid</span></span> </div>
+            <div class=" d-flex mt-2">
+                <button id="show-form-btn" class="btn1 btn-dark">Log Visitor</button><button id="show-transact-btn" class="btn1 btn-dark">Make Payments</button><button  id="logout-btn" class="btn1 btn-dark"><a th:href="@{/web/sessionExpired}" style="text-decoration:none;">Log Out</a></button>
+            </div>
+
+            <div class=" d-flex mt-2">
+            <button id="show-visitors-btn" class="btn1 btn-dark">View Logged Visitors</button> <button id="show-txnview-btn" class="btn1 btn-dark">View Transactions</button>
+            </div>
+
+
+
+        </div>
+
+
+
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+  $('#show-form-btn').click(function() {
+    $('#form-container').slideDown();
+    $('#main-screen').toggle();
+  });
+
+
+  $('#close-form-btn').click(function() {
+    $('#form-container').slideUp(function() {
+     $('#main-screen').fadeIn();
+    });
+  });
+});
+
+</script>
+
+
+<script>
+$(document).ready(function() {
+  $('#show-transact-btn').click(function() {
+    $('#trans-form-container').slideDown();
+    $('#main-screen').toggle();
+  });
+
+  $('#close-payform-btn').click(function() {
+    $('#trans-form-container').slideUp(function() {
+     $('#main-screen').fadeIn();
+    });
+  });
+});
+
+</script>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#visitor-form').on('submit', function(event) {
+      event.preventDefault(); // prevent the default form submission
+
+      // send the AJAX request
+      $.ajax({
+        url: '/visitor/log', // replace with the URL of your Spring Boot backend login endpoint
+        method: 'post',
+        data: {
+          name: $('#vname').val(),
+          email: $('#vemail').val(),
+          phone: $('#vphone').val(),
+          days: $('#vduration').val(),
+          location: $('#vlocation').val(),
+          password: $('#userpass').val(),
+          resident: $('#resident').val()
+        },
+        success: function(data) {
+
+         $('#visitor-form')[0].reset();
+         $('#visitor-form').prepend('<div class="success">' + data + '</div>');
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // display error message to the user
+          if (jqXHR.responseText) {
+            $('#visitor-form').prepend('<div class="error">' + jqXHR.responseText + '</div>');
+           }
+        }
+      });
+    });
+  });
+</script>
+
+
+<script>
+
+    const name = document.getElementById('first-name').value;
+    const result = name.replace(/ /g, '_');
+
+    const randomNumber = Math.floor(Math.random() * 900000) + 100000;
+
+    const ref = result.concat('_', randomNumber);
+    console.log(ref);
+
+    const paymentForm = document.getElementById('paymentForm');
+    paymentForm.addEventListener("submit", payWithPaystack, false);
+    function payWithPaystack(e) {
+        e.preventDefault();
+
+
+    let handler = PaystackPop.setup({
+    key: 'pk_test_66d623dd735b4fb516d1ea92a07e335faff325f3', // Replace with your public key
+    email: document.getElementById('email-address').value,
+    amount: document.getElementById('amount').value * 100, // the amount value is multiplied by 100 to convert to the lowest currency unit
+    currency: 'NGN', // Use GHS for Ghana Cedis or USD for US Dollars
+    ref: ref,
+    callback: function(response) {
+      var reference = response.reference;
+      alert('Payment complete! Reference: ' + reference);
+    },
+    onClose: function() {
+      alert('Transaction was not completed, window closed.');
+    },
+  });
+  handler.openIframe();
+
+    $.ajax({
+        url: '/txns/log',
+        method: 'post',
+        data: {
+
+            name: document.getElementById('first-name').value,
+            email: document.getElementById('email-address').value,
+            amount: document.getElementById('amount').value,
+            ref: ref
+        },
+
+      });
+
+
+}</script>
+
+
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>New Haven</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="/vendor/aos/aos.css" rel="stylesheet">
+  <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="/css/style.css" rel="stylesheet">
+  <link href="/css/login.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Plato - v4.10.0
+  * Template URL: https://bootstrapmade.com/plato-responsive-bootstrap-website-template/
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+
+
+  <style>
+  .file-upload {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  .file-upload input[type="file"] {
+    display: none;
+  }
+
+  .file-upload label {
+    background-color: #38B2AC;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+
+  }
+
+  .error {
+  color: red;
+  }
+</style>
+
+</head>
+
+
+<body>
+  <div class="wrap">
+
+    <!-- ======= Hero Section ======= -->
+    <section id="hero">
+      <div class="hero-container" data-aos="fade-up">
+        <h1>New Haven <span>Estate</span></h1>
+        <h2>A land of peace and Serenity</h2>
+        <a href="#about" class="btn-get-started scrollto">Login</a>
+      </div>
+
+      <div th:if="${success != null}">
+        <div class="alert alert-info text-center border border-info">
+          <b th:text="${success}"/>
+        </div>
+      </div>
+
+
+    </section><!-- End Hero -->
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="d-flex align-items-center">
+      <div class="container d-flex align-items-center justify-content-between">
+
+        <div class="logo">
+          <h1 class="text-light"><a href="index.html"><span>Haven</span></a></h1>
+          <!-- Uncomment below if you prefer to use an image logo -->
+          <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
+        </div>
+
+        <nav id="navbar" class="navbar">
+          <ul>
+            <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+            <li><a class="nav-link scrollto" href="#about">Login</a></li>
+            <li><a class="nav-link scrollto" href="#services">About</a></li>
+            <li><a class="nav-link scrollto" href="#team">Exco</a></li>
+            <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+
+      </div>
+    </header><!-- End Header -->
+
+    <main id="main">
+
+      <!-- ======= About Section ======= -->
+      <section id="about" class="about">
+<!--        <a href="https://front.codes/" class="logo" target="_blank">-->
+<!--          <img src="https://assets.codepen.io/1462889/fcy.png" alt="">-->
+<!--        </a>-->
+
+        <div class="section">
+          <div class="container">
+            <div class="row full-height justify-content-center">
+              <div class="col-12 text-center align-self-center py-5">
+                <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                  <h6 class="mb-0 pb-3"><span>Log In </span><span>Sign Up</span></h6>
+                  <input class="checkbox" type="checkbox" id="reg-log" name="reg-log"/>
+                  <label for="reg-log"></label>
+                  <div class="card-3d-wrap mx-auto">
+                    <div class="card-3d-wrapper">
+                      <div class="card-front">
+                        <div class="center-wrap">
+                          <div class="section text-center">
+
+
+                            <h4 class="mb-3 pb-3">Log In</h4>
+                            <form id="login-form" method="post">
+                            <div class="form-group">
+                              <input type="email" name="logemail" class="form-style" placeholder="Your Email" id="logemail" autocomplete="off">
+                              <i class="input-icon uil uil-at"></i>
+                            </div>
+                            <div class="form-group mt-2">
+                              <input type="password" name="logpass" class="form-style" placeholder="Your Password" id="logpass" autocomplete="off">
+                              <i class="input-icon uil uil-lock-alt"></i>
+                            </div>
+                            <button type="submit" class="btn mt-4 btn-success">Login!</button>
+                            <p class="mb-0 mt-4 text-center"><a href="#0" class="link">Forgot your password?</a></p>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-back">
+                        <div class="center-wrap">
+                          <div class="section text-center">
+                            <h4 class="mb-3 pb-3">Sign Up</h4>
+                            <form action="#" th:action="@{/upload}" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                              <input type="text" name="surname" class="form-style" placeholder="Your Surname" id="surname" autocomplete="off" required>
+                              <i class="input-icon uil uil-user"></i>
+                            </div>
+
+                            <div class="form-group mt-2">
+                              <input type="text" name="fname" class="form-style" placeholder="Your First Name" id="fname" autocomplete="off" required>
+                              <i class="input-icon uil uil-at"></i>
+                            </div>
+
+                            <div class="form-group mt-2">
+                              <input type="email" name="logemail" class="form-style" placeholder="Your Email" id="logemail" autocomplete="off" required>
+                              <i class="input-icon uil uil-at"></i>
+                            </div>
+
+                              <div class="form-group mt-2">
+                                <input type="tel" name="phone" class="form-style" placeholder="Your Mobile Number" id="phone" autocomplete="off" required>
+                                <i class="input-icon uil uil-at"></i>
+                              </div>
+
+                              <div class="form-group d-flex justify-content-between mt-2">
+                                <div class="col-sm-4">
+                                  <select name="area" class="form-control" id="selectField1">
+                                    <option disabled selected>Area</option>
+                                    <option>Area 1</option>
+                                    <option>Area 2</option>
+                                    <option>Area 3</option>
+                                    <option>Area 4</option>
+                                    <option>Area 5</option>
+                                    <option>Area 6</option>
+                                    <option>Area 7</option>
+                                    <option>Area 8</option>
+                                    <option>Area 9</option>
+                                    <option>Triangular</option>
+                                  </select>
+                                </div>
+                                <div class="col-sm-4">
+                                  <input type="number" name="road" placeholder="Road" class="form-control" id="inputField2">
+                                </div>
+                                <div class="col-sm-4">
+                                  <input type="number" name="plot" placeholder="Plot" class="form-control" id="inputField3">
+                                </div>
+                              </div>
+
+                                <div class="form-group mt-2 file-upload">
+                                  <input id="file" name="file" type="file" />
+                                  <label for="file">Upload Picture of yourself</label>
+                                </div>
+
+                            <div class="form-group mt-2">
+                              <input type="password" name="logpass" class="form-style" placeholder="Your Password" id="logpass" min="8" autocomplete="off">
+                              <i class="input-icon uil uil-lock-alt"></i>
+                            </div>
+                              <button type="submit" class="btn mt-4 btn-success">Sign Up!</button>
+
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section><!-- End About Section -->
+
+      <!-- ======= Clients Section ======= -->
+
+
+
+
+      <!-- ======= Services Section ======= -->
+      <section id="services" class="services">
+        <div class="container">
+
+          <div class="section-title" data-aos="fade-down">
+            <span>About</span>
+            <h2>About</h2>
+            <p>New Haven Estate Iba</p>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="icon-box" data-aos="fade-up" data-aos-delay="100">
+                <i class="bi bi-briefcase" style="color: #0ea5e0;"></i>
+                <h4><a href="#">Proximity to the island</a></h4>
+                <p>New Haven estate is very close to the island</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="icon-box" data-aos="fade-up" data-aos-delay="200">
+                <i class="bi bi-card-checklist" style="color: #07cc70;"></i>
+                <h4><a href="#">Security</a></h4>
+                <p>New Haven Estate has very trained security personnel thereby making the estate safe from attacks</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="icon-box" data-aos="fade-up" data-aos-delay="300">
+                <i class="bi bi-bar-chart" style="color: #e40373;"></i>
+                <h4><a href="#">Good Road Network</a></h4>
+                <p>New Haven Estate has very good road network and many more roads which are still under construction</p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="icon-box" data-aos="fade-up" data-aos-delay="400">
+                <i class="bi bi-binoculars" style="color: #f0b103;"></i>
+                <h4><a href="#">Beautiful Apartments</a></h4>
+                <p>Houses built in New Haven Estate are built using modern technologies and made to be comfortable for habitants</p>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section><!-- End Services Section -->
+
+
+
+      <!-- ======= Team Section ======= -->
+      <section id="team" class="team">
+        <div class="container">
+
+          <div class="section-title" data-aos="fade-down">
+            <span>Exco</span>
+            <h2>Exco</h2>
+            <p>Meet our Estate Exco</p>
+          </div>
+
+          <div class="row">
+
+            <div class="col-xl-3 col-lg-4 col-md-6">
+              <div class="member" data-aos="fade-up" data-aos-delay="100">
+                <img src="/img/team/team-1.jpg" class="img-fluid" alt="">
+                <div class="member-info">
+                  <div class="member-info-content">
+                    <h4>Walter White</h4>
+                    <span>Chairman</span>
+                  </div>
+                  <div class="social">
+                    <a href=""><i class="bi bi-twitter"></i></a>
+                    <a href=""><i class="bi bi-facebook"></i></a>
+                    <a href=""><i class="bi bi-instagram"></i></a>
+                    <a href=""><i class="bi bi-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 mt-4 mt-md-0">
+              <div class="member" data-aos="fade-up" data-aos-delay="200">
+                <img src="/img/team/team-2.jpg" class="img-fluid" alt="">
+                <div class="member-info">
+                  <div class="member-info-content">
+                    <h4>Sarah Jhonson</h4>
+                    <span>Vice Chairman</span>
+                  </div>
+                  <div class="social">
+                    <a href=""><i class="bi bi-twitter"></i></a>
+                    <a href=""><i class="bi bi-facebook"></i></a>
+                    <a href=""><i class="bi bi-instagram"></i></a>
+                    <a href=""><i class="bi bi-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 mt-4 mt-lg-0" data-wow-delay="0.2s">
+              <div class="member" data-aos="fade-up" data-aos-delay="300">
+                <img src="/img/team/team-3.jpg" class="img-fluid" alt="">
+                <div class="member-info">
+                  <div class="member-info-content">
+                    <h4>William Anderson</h4>
+                    <span>Secretary</span>
+                  </div>
+                  <div class="social">
+                    <a href=""><i class="bi bi-twitter"></i></a>
+                    <a href=""><i class="bi bi-facebook"></i></a>
+                    <a href=""><i class="bi bi-instagram"></i></a>
+                    <a href=""><i class="bi bi-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-4 col-md-6 mt-4 mt-lg-0" data-wow-delay="0.3s">
+              <div class="member" data-aos="fade-up" data-aos-delay="400">
+                <img src="/img/team/team-4.jpg" class="img-fluid" alt="">
+                <div class="member-info">
+                  <div class="member-info-content">
+                    <h4>Amanda Jepson</h4>
+                    <span>CSO</span>
+                  </div>
+                  <div class="social">
+                    <a href=""><i class="bi bi-twitter"></i></a>
+                    <a href=""><i class="bi bi-facebook"></i></a>
+                    <a href=""><i class="bi bi-instagram"></i></a>
+                    <a href=""><i class="bi bi-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section><!-- End Team Section -->
+
+
+
+      <!-- ======= Contact Us Section ======= -->
+      <section id="contact" class="contact">
+        <div class="container">
+
+          <div class="section-title" data-aos="fade-down">
+            <span>Contact Us</span>
+            <h2>Contact Us</h2>
+          </div>
+
+          <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-12" data-aos="fade-up" data-aos-delay="100">
+              <div class="info-box">
+                <i class="bx bx-map"></i>
+                <h3>Our Address</h3>
+                <p>Estate Headquarters, Estate Road, New Haven Estate, Iba</p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="200">
+              <div class="info-box">
+                <i class="bx bx-envelope"></i>
+                <h3>Email Us</h3>
+                <p>info@newhavenestate.com<br>support@newhavenestate.com</p>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mt-4 mt-lg-0" data-aos="fade-up" data-aos-delay="300">
+              <div class="info-box">
+                <i class="bx bx-phone-call"></i>
+                <h3>Call Us</h3>
+                <p>+2349034428925<br>+2348037263544</p>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </section><!-- End Contact Us Section -->
+
+    </main><!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer">
+
+
+      <div class="footer-top">
+        <div class="container">
+          <div class="row">
+
+            <div class="col-lg-3 col-md-6 footer-contact">
+              <h3>New Haven Estate</h3>
+              <p>
+                Estate Headquarters<br>
+                Estate Road<br>
+                New Haven Estate, Iba <br><br>
+                <strong>Phone:</strong> +2349034428925<br>
+                <strong>Email:</strong> info@newhavenestate.com<br>
+              </p>
+            </div>
+
+            <div class="col-lg-3 col-md-6 footer-links">
+              <h4>Useful Links</h4>
+              <ul>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
+                <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
+              </ul>
+            </div>
+
+
+            <div class="col-lg-3 col-md-6 footer-links">
+              <h4>Our Social Networks</h4>
+              <p>You can follow us on below social media channels</p>
+              <div class="social-links mt-3">
+                <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
+                <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
+                <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
+                <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
+                <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="container py-4">
+        <div class="copyright">
+          &copy; Copyright <strong><span>New Haven Estate</span></strong>. All Rights Reserved
+        </div>
+        <div class="credits">
+          <!-- All the links in the footer should remain intact. -->
+          <!-- You can delete the links only if you purchased the pro version. -->
+          <!-- Licensing information: https://bootstrapmade.com/license/ -->
+          <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/plato-responsive-bootstrap-website-template/ -->
+          Designed by <a href="https://bootstrapmade.com/">David Nwoji</a>
+        </div>
+      </div>
+    </footer><!-- End Footer -->
+
+  </div>
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Vendor JS Files -->
+  <script src="/vendor/aos/aos.js"></script>
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="/vendor/php-email-form/validate.js"></script>
+
+  <!-- Template Main JS File -->
+  <script src="/js/main.js"></script>
+
+
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const input = document.querySelector('input[type="file"]');
+    const label = document.querySelector('.file-upload label');
+
+    input.addEventListener('change', function() {
+      if (input.value) {
+        label.innerText = input.value.split("\\").pop();
+      } else {
+        label.innerText = 'Choose file';
+      }
+    });
+  });
+</script>
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+  $(document).ready(function() {
+    $('#login-form').on('submit', function(event) {
+      event.preventDefault(); // prevent the default form submission
+
+      // send the AJAX request
+      $.ajax({
+        url: '/login', // replace with the URL of your Spring Boot backend login endpoint
+        method: 'post',
+        data: {
+          username: $('#logemail').val(),
+          password: $('#logpass').val()
+        },
+        success: function(data) {
+
+          window.location.href = '/web/dashboard';
+          // handle successful login (e.g. redirect to dashboard page)
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // display error message to the user
+          $('#login-form').prepend('<div class="error">Invalid username or password</div>');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+
+</html>

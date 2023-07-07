@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+  <link rel="icon" type="image/png" sizes="16x16" href="plugins/images/EstateLogo1.png">
+
+  <link href="/css/login.css" rel="stylesheet">
+  <script src="/js/login.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="/js/sweetalert2.js"></script>
+
+
+
+
+  <style>
+  .file-upload {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  .file-upload input[type="file"] {
+    display: none;
+  }
+
+  .file-upload label {
+    background-color: #38B2AC;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+
+  }
+
+  .error {
+  color: red;
+  }
+</style>
+
+
+</head>
+<body>
+
+
+<div class="login-wrap">
+  <div class="login-html">
+    <h2 id="welcome"><code>Welcome to Gian Carlo Auditioning platform</code></h2>
+
+    <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
+    <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
+    <div class="login-form">
+      <form id="login-form">
+      <div class="sign-in-htm">
+        <div class="group">
+          <label for="user" class="label">Username</label>
+          <input id="logemail" type="text" class="input">
+        </div>
+        <div class="group">
+          <label for="pass" class="label">Password</label>
+          <input id="logpass" type="password" class="input" data-type="password">
+        </div>
+        <div class="group">
+          <input id="check" type="checkbox" class="check" checked>
+          <label for="check"><span class="icon"></span> Keep me Signed in</label>
+        </div>
+        <div class="group">
+          <input type="submit" id="submit-button" class="button" value="Sign In">
+          <img id="loader" src="/img/loader.gif" style="display:none;position:relative;">
+          <span id="span-message" class="message"></span>
+        </div>
+      </form>
+        <div class="hr"></div>
+        <div class="foot-lnk">
+          <a href="#forgot">Forgot Password?</a>
+        </div>
+      </div>
+      <div class="sign-up-htm">
+        <form id="signup-form">
+        <div class="group">
+          <label for="user" class="label">Username</label>
+          <input id="user" type="text" class="input">
+        </div>
+        <div class="group">
+          <label for="pass" class="label">Password</label>
+          <input id="pass" type="password" class="input" data-type="password">
+        </div>
+        <div class="group">
+          <label for="pass" class="label">Repeat Password</label>
+          <input id="pass2" type="password" class="input" data-type="password">
+        </div>
+        <div class="group">
+          <label for="pass" class="label">Email Address</label>
+          <input id="emailAddress" type="text" class="input">
+        </div>
+        <div class="group">
+          <input type="submit" id="submit-signup" class="button" value="Sign Up">
+          <img id="loader2" src="/img/loader.gif" style="display:none;position:relative;">
+          <span id="span-sign-up-message" class="message"></span>
+
+
+        </div>
+        </form>
+        <div class="hr"></div>
+        <div class="foot-lnk">
+          <label for="tab-1">Already Member?</label></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="/js/login.js"></script>
+<script src="/js/sweetalert2.js"></script>
+
+
+
+<!--<script>-->
+<!--  document.addEventListener("DOMContentLoaded", function() {-->
+<!--    const input = document.querySelector('input[type="file"]');-->
+<!--    const label = document.querySelector('.file-upload label');-->
+
+<!--    input.addEventListener('change', function() {-->
+<!--      if (input.value) {-->
+<!--        label.innerText = input.value.split("\\").pop();-->
+<!--      } else {-->
+<!--        label.innerText = 'Choose file';-->
+<!--      }-->
+<!--    });-->
+<!--  });-->
+<!--</script>-->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    $(document).ready(function() {
+    $('#login-form').on('submit', function(event) {
+      event.preventDefault(); // prevent the default form submission
+
+
+      $('#submit-button').hide();
+      $('#loader').show();
+
+      // send the AJAX request
+      $.ajax({
+        url: '/login', // replace with the URL of your Spring Boot backend login endpoint
+        method: 'post',
+        data: {
+          username: $('#logemail').val(),
+          password: $('#logpass').val()
+        },
+        success: function(data) {
+
+          window.location.href = '/web/dashboard';
+          // handle successful login (e.g. redirect to dashboard page)
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          // display error message to the user
+           $('#submit-button').show();
+           $('#loader').hide();
+
+          $('#span-message').html('Invalid username or password')
+          .fadeIn(300)
+          .delay(4000)
+          .fadeOut(300, function() { $(this).remove();});
+
+
+        }
+      });
+    });
+
+
+      $('#pass2').on('keyup', function() {
+    var fieldValue1 = $(this).val(); // Get the value of field1
+    var fieldValue2 = $('#pass').val(); // Get the value of field2
+
+    if (fieldValue1 === fieldValue2) {
+      // Values match, do something
+      console.log("Values match");
+      $('#span-sign-up-message').html('Password match')
+
+    } else {
+      // Values don't match, do something else
+      console.log("Values don't match");
+      $('#span-sign-up-message').html('Password mismatch')
+
+    }
+  });
+
+
+    });
+
+</script>
+
+
+
+</body>
+</html>
