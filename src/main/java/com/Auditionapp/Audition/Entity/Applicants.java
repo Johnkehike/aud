@@ -15,7 +15,7 @@ public class Applicants {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String applicantId;
+    private Long applicantId;
     @Column(name = "applicant_name")
     private String applicantName;
     @Column(name = "event_name")
@@ -24,8 +24,12 @@ public class Applicants {
     private String applicantRole;
 
     @Column(name = "applicant_score")
-    private String applicantScore;
+    private int applicantScore;
 
     @Column(name = "producer_name")
     private String producerName;
+
+    private String email;
+
+    private String phone;
 }

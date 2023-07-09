@@ -1,10 +1,12 @@
 package com.Auditionapp.Audition.Controller;
 
+import com.Auditionapp.Audition.Entity.Applicants;
 import com.Auditionapp.Audition.Entity.ResponseMessage;
 import com.Auditionapp.Audition.Entity.Roles;
 import com.Auditionapp.Audition.Entity.Users;
 import com.Auditionapp.Audition.Helpers.EmailSenderService;
 import com.Auditionapp.Audition.Helpers.RandomGenertor;
+import com.Auditionapp.Audition.Repository.ApplicantRepository;
 import com.Auditionapp.Audition.Repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -29,6 +32,7 @@ public class UserController {
 
     @Autowired
     UsersRepository usersRepository;
+
 
     @Autowired
     private EmailSenderService emailSenderService;
@@ -97,7 +101,6 @@ public class UserController {
 
 
     }
-
 
 
 }

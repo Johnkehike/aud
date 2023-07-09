@@ -34,20 +34,28 @@
                 <h2 class="title">Applicants Registration Form</h2>
             </div>
             <div class="card-body">
-                <form method="POST">
+                <div th:if="${status != null}">
+
+                    <div class="alert alert-info text-center border border-info">
+                        <b th:text="${status}"/>
+                    </div>
+
+                </div>
+
+                <form th:action="@{/applicants/upload}" method="POST" enctype="multipart/form-data">
                     <div class="form-row m-b-55">
                         <div class="name">Name</div>
                         <div class="value">
                             <div class="row row-space">
                                 <div class="col-2">
                                     <div class="input-group-desc">
-                                        <input class="input--style-5" type="text" name="first_name">
+                                        <input class="input--style-5" type="text" name="first_name" required>
                                         <label class="label--desc">first name</label>
                                     </div>
                                 </div>
                                 <div class="col-2">
                                     <div class="input-group-desc">
-                                        <input class="input--style-5" type="text" name="last_name">
+                                        <input class="input--style-5" type="text" name="last_name" required>
                                         <label class="label--desc">last name</label>
                                     </div>
                                 </div>
@@ -66,20 +74,37 @@
                         <div class="name">Email</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="email" name="email">
+                                <input class="input--style-5" type="email" name="email" required>
                             </div>
                         </div>
                     </div>
 
 
                     <div class="form-row">
-                        <div class="name">Event Applying</div>
+                        <div class="name">Set Password</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="text" name="event" th:value="${eventList.eventName}" readonly>
+                                <input class="input--style-5" type="password" name="password" required>
                             </div>
                         </div>
                     </div>
+
+                    <div class="form-row">
+                        <div class="name">Event Applying</div>
+                        <div class="value">
+                            <div class="input-group">
+                                <div class="rs-select2 js-select-simple select--no-search">
+                                    <select id="events" name="events" onchange="findEvents()" required>
+                                        <option disabled="disabled" selected="selected">Choose option</option>
+                                        <option th:each="event : ${eventList}" th:text="${event.eventName}"></option>
+                                    </select>
+                                    <div class="select-dropdown"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
 
 
 
@@ -97,7 +122,7 @@
                         <div class="name">Date Of Premiere</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="text" name="date" th:value="${eventList.startDate}" readonly>
+                                <input id="datePremiere" class="input--style-5" type="text" name="date" readonly>
                             </div>
                         </div>
                     </div>
@@ -107,7 +132,7 @@
                         <div class="name">Attach Videos</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="file" multiple="multiple" name="files">
+                                <input class="input--style-5" type="file" accept=".jpg,.jpeg,.mp4" multiple="multiple" name="files" required>
                             </div>
                         </div>
                     </div>
@@ -120,13 +145,13 @@
                             <div class="row row-refine">
                                 <div class="col-3">
                                     <div class="input-group-desc">
-                                        <input class="input--style-5" type="text" name="area_code">
+                                        <input class="input--style-5" type="text" name="area_code" required>
                                         <label class="label--desc">Area Code</label>
                                     </div>
                                 </div>
                                 <div class="col-9">
                                     <div class="input-group-desc">
-                                        <input class="input--style-5" type="text" name="phone">
+                                        <input class="input--style-5" type="text" name="phone" required>
                                         <label class="label--desc">Phone Number</label>
                                     </div>
                                 </div>
@@ -138,9 +163,8 @@
                         <div class="value">
                             <div class="input-group">
                                 <div class="rs-select2 js-select-simple select--no-search">
-                                    <select name="subject">
+                                    <select id="roles" name="roles" required>
                                         <option disabled="disabled" selected="selected">Choose option</option>
-                                        <option th:each="option : ${options}" th:text="${option}"></option>
                                     </select>
                                     <div class="select-dropdown"></div>
                                 </div>
@@ -165,6 +189,53 @@
 
 <!-- Main JS-->
 <script src="/js/global.js"></script>
+
+
+<script>
+
+    function findEvents() {
+        console.log('I am in the method');
+
+        var event = $("#events option:selected").val();
+
+        var registrationReq = {};
+        registrationReq.eventName = event;
+
+        var req = JSON.stringify(registrationReq);
+
+        // send the AJAX request
+        $.ajax({
+
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            url: '/event/findEventsByName',
+            method: 'post',
+            data: req,
+            success: function (data) {
+
+                $("#datePremiere").val(data.startDate);
+                var options = data.roles.split(",");
+                for(var i = 0; i < options.length; i++) {
+
+                var option = document.createElement("option");
+                option.value = options[i];
+                option.text = options[i];
+
+                $("#roles").append(option);
+
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+
+                fireErrorMessage("Error", "Failed to Load Event");
+            }
+        });
+
+    }
+
+</script>
 
 </body>
 

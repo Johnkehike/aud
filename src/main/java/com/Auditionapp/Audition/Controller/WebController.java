@@ -5,6 +5,7 @@ import com.Auditionapp.Audition.Entity.Events;
 import com.Auditionapp.Audition.Entity.ResponseMessage;
 import com.Auditionapp.Audition.Entity.Roles;
 import com.Auditionapp.Audition.Entity.Users;
+import com.Auditionapp.Audition.Repository.ApplicantRepository;
 import com.Auditionapp.Audition.Repository.EventsRepository;
 import com.Auditionapp.Audition.Repository.UsersRepository;
 import com.Auditionapp.Audition.Repository.VisitorsRepository;
@@ -48,6 +49,9 @@ public class WebController {
     @Autowired
     private EventsRepository eventsRepository;
 
+    @Autowired
+    private ApplicantRepository applicantRepository;
+
     @Value("${imagePath}")
     private String imagePath;
 
@@ -64,10 +68,13 @@ public class WebController {
         int countDirectors = usersRepository.countRoles("DIRECTOR");
         int countProducers = usersRepository.countRoles("PRODUCER");
         int countApplicants = usersRepository.countRoles("USER");
+        int countEvents = applicantRepository.countDistinctEvents();
+
 
         model.addAttribute("countDirectors", countDirectors);
         model.addAttribute("countProducers", countProducers);
         model.addAttribute("countApplicants", countApplicants);
+        model.addAttribute("totalEvents", countEvents);
 
         return "Dashboard";
     }
@@ -146,6 +153,11 @@ public class WebController {
         else if(userRole.equals("PRODUCER")) {
             Users users = usersRepository.findByName(userName);
             events = eventsRepository.findEventsByProducer(users.getFullName());
+        }
+
+        else if(userRole.equals("USER")) {
+            Users users = usersRepository.findByName(userName);
+            events = eventsRepository.findEventsByApplicants(users.getFullName());
         }
 
         model.addAttribute("allevents", events);

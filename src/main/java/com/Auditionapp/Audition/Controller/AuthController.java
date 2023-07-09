@@ -54,11 +54,11 @@ public class AuthController {
 
         Users user = usersRepository.findByName(producer);
         String fullNameProducer = user.getFullName();
-        Events eventList =  eventsRepository.findEventsByProducerAndStatus(fullNameProducer, "AUDITION");
+        List<Events> eventList =  eventsRepository.findEventsByProducerAndStatus(fullNameProducer, "AUDITION");
 
-        String[] options = eventList.getRoles().split(",");
+//        String[] options = eventList.getRoles().split(",");
 
-         model.addAttribute("options", options);
+//         model.addAttribute("options", options);
          model.addAttribute("producer", fullNameProducer);
          model.addAttribute("eventList", eventList);
 

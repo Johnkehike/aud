@@ -76,5 +76,12 @@ public class EventController {
     }
 
 
+    @PostMapping("/findEventsByName")
+    public ResponseEntity<?> findRolesByEvents(@RequestBody Events events) {
+
+        Events event = eventsRepository.findByEventName(events.getEventName());
+        return new ResponseEntity<>(event, HttpStatus.OK);
+    }
+
 
 }
