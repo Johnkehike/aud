@@ -1,8 +1,6 @@
 package com.Auditionapp.Audition.Controller;
 
-import com.Auditionapp.Audition.Entity.Applicants;
-import com.Auditionapp.Audition.Entity.Roles;
-import com.Auditionapp.Audition.Entity.Users;
+import com.Auditionapp.Audition.Entity.*;
 import com.Auditionapp.Audition.Helpers.EmailSenderService;
 import com.Auditionapp.Audition.Helpers.RandomGenertor;
 import com.Auditionapp.Audition.Repository.ApplicantRepository;
@@ -15,28 +13,25 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequestMapping("/applicants")
@@ -59,10 +54,11 @@ public class ApplicantsController {
     @Value("${homePage}")
     private String homePage;
 
-
-
     @Value("${applicantUploadPath}")
     private String applicantUploadPath;
+
+    @Value("${applicantsUploadPath}")
+    private String applicantsUploadPath;
 
 
     @PostMapping("/getUrl")
@@ -96,6 +92,7 @@ public class ApplicantsController {
 
     @PostMapping("/upload")
     public String addApplicants(@RequestParam("files") List<MultipartFile> files,
+                                @RequestParam("message") String message,
                                 @RequestParam("first_name") String fname, @RequestParam("last_name") String lastName,
                                 @RequestParam("email") String email, @RequestParam("events") String events,
                                 @RequestParam("producer") String producer, @RequestParam("date") String dateOfEvent,
@@ -108,6 +105,11 @@ public class ApplicantsController {
         String hashed_password = BCrypt.hashpw(password, BCrypt.gensalt());
         String id = RandomGenertor.generateNumericRef(3);
 
+        Applicants applicants1 = applicantRepository.findByEmail(email);
+        if(applicants1 != null) {
+            redirectAttributes.addFlashAttribute("status", "Applicant already applied for an event");
+            return "redirect:/signup/"+producer;
+        }
 
         try {
             for(MultipartFile file : files) {
@@ -116,8 +118,10 @@ public class ApplicantsController {
                 Path directoryPath = Paths.get(imagePath);
                 Files.createDirectories(directoryPath); // Create the directory if it doesn't exist
 
-                String customFileName = file.getOriginalFilename() + ".jpg"; // Use custom name based on user's name
+                String customFileName = file.getOriginalFilename() + getExtension(file.getOriginalFilename());
                 Path filePath = directoryPath.resolve(customFileName);
+
+
                 Files.write(filePath, bytes);
                 log.info("Files Successfully uploaded to the drive");
             }
@@ -128,6 +132,8 @@ public class ApplicantsController {
             applicants.setProducerName(producer);
             applicants.setEmail(email);
             applicants.setPhone(areaCode+phone);
+            applicants.setMessage(message);
+            applicants.setSelectionStatus(ApplicantSelection.valueOf("PENDING"));
 
             users.setPassword(hashed_password);
             users.setRole(Roles.valueOf("USER"));
@@ -136,7 +142,10 @@ public class ApplicantsController {
             users.setFullName(fullName);
             users.setName(fullName.replace(" ", "").toLowerCase()+id);
 
+            applicants.setUserName(users.getName());
+
             Users users1 = usersRepository.save(users);
+
             applicants.setApplicantId(users1.getUserId());
             applicantRepository.save(applicants);
 
@@ -152,6 +161,21 @@ public class ApplicantsController {
         }
 
     }
+
+
+
+
+    private String getExtension(String fileName) {
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex > 0 && dotIndex < fileName.length() - 1) {
+            return fileName.substring(dotIndex);
+        } else {
+            return "";
+        }
+
+    }
+
+
 
 
     public void SendMail(String recipientEmail, String recipientName) {
@@ -173,5 +197,125 @@ public class ApplicantsController {
 
     }
 
+
+    @PostMapping("/download")
+    public ResponseEntity<byte[]> downloadApplicantsData(@RequestParam("eventName") String eventName, @RequestParam("applicantName") String applicantName) {
+
+        String folderPath = "C:" + File.separator + eventName + File.separator + applicantName;
+
+        try {
+            // Create a temporary file to store the zipped folder
+            File zipFile = File.createTempFile("temp", ".zip");
+            FileOutputStream fos = new FileOutputStream(zipFile);
+            ZipOutputStream zos = new ZipOutputStream(fos);
+
+            // Recursively add files and subdirectories to the zip file
+            addFolderToZip(zos, Paths.get(folderPath), Paths.get(folderPath).getFileName().toString());
+
+            zos.close();
+            fos.close();
+
+            // Read the zipped file into a byte array
+            byte[] zipBytes = Files.readAllBytes(zipFile.toPath());
+
+            // Set the appropriate headers for the response
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDisposition(ContentDisposition.attachment().filename("user_folder.zip").build());
+
+            return new ResponseEntity<>(zipBytes, headers, HttpStatus.OK);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void addFolderToZip(ZipOutputStream zos, Path folderPath, String baseFolderName) throws IOException {
+        File folder = folderPath.toFile();
+        File[] files = folder.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    addFolderToZip(zos, file.toPath(), baseFolderName + File.separator + file.getName());
+                } else {
+                    FileInputStream fis = new FileInputStream(file);
+                    ZipEntry zipEntry = new ZipEntry(baseFolderName + File.separator + file.getName());
+                    zos.putNextEntry(zipEntry);
+
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = fis.read(buffer)) > 0) {
+                        zos.write(buffer, 0, length);
+                    }
+
+                    zos.closeEntry();
+                    fis.close();
+                }
+            }
+        }
+    }
+
+
+
+    @PostMapping("/scores")
+    @Transactional
+    public ResponseEntity<ResponseMessage> updateScores(@RequestBody Applicants applicants, ResponseMessage responseMessage) {
+        try {
+            Applicants applicants1 = applicantRepository.findByApplicantId(applicants.getApplicantId());
+            int newScore = applicants1.getApplicantScore() + applicants.getScore();
+
+            applicants1.setApplicantScore(newScore);
+            applicants1.setSelectionStatus(ApplicantSelection.valueOf(applicants.getApplicantStatus()));
+
+            applicantRepository.save(applicants1);
+
+            responseMessage.setMessage("Score updated successfully");
+            responseMessage.setCode("00");
+
+            return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+        }
+
+        catch(Exception e){
+
+            responseMessage.setMessage("Failed to update score");
+            responseMessage.setCode("96");
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/{id}/delete")
+    @Transactional
+    public String DeleteApplicant(@PathVariable("id") Long applicationId, RedirectAttributes redirectAttributes) {
+
+        try {
+            Applicants applicants = applicantRepository.findByApplicantId(applicationId);
+            applicantRepository.deleteByApplicantId(applicationId);
+            usersRepository.deleteByUserId(applicationId - 1L);
+
+            String folderPath = applicantsUploadPath + File.separator + applicants.getEventName() + File.separator + applicants.getApplicantName();
+            Path directoryPath = Paths.get(folderPath);
+
+            try {
+                Files.walk(directoryPath)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+                System.out.println("Folder deleted successfully");
+            } catch (IOException e) {
+                System.err.println("Failed to delete folder: " + e.getMessage());
+            }
+
+            redirectAttributes.addFlashAttribute("record", "Applicant Deleted Successfully");
+        }
+
+        catch(Exception e) {
+            redirectAttributes.addFlashAttribute("record", "Error deleting applicant");
+        }
+        return "redirect:/web/viewApplicants";
+
+    }
 
 }

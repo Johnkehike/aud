@@ -1,10 +1,7 @@
 package com.Auditionapp.Audition.Controller;
 
 
-import com.Auditionapp.Audition.Entity.Events;
-import com.Auditionapp.Audition.Entity.ResponseMessage;
-import com.Auditionapp.Audition.Entity.Roles;
-import com.Auditionapp.Audition.Entity.Users;
+import com.Auditionapp.Audition.Entity.*;
 import com.Auditionapp.Audition.Repository.ApplicantRepository;
 import com.Auditionapp.Audition.Repository.EventsRepository;
 import com.Auditionapp.Audition.Repository.UsersRepository;
@@ -65,16 +62,28 @@ public class WebController {
     @GetMapping("/dashboard")
     public String dashboardPage(Model model, HttpSession session) {
 
+
+        Users userProfile = (Users) session.getAttribute("userprofile");
+
+
         int countDirectors = usersRepository.countRoles("DIRECTOR");
         int countProducers = usersRepository.countRoles("PRODUCER");
         int countApplicants = usersRepository.countRoles("USER");
         int countEvents = applicantRepository.countDistinctEvents();
+        Applicants applicants = applicantRepository.findByEmail(userProfile.getEmail());
+
+        if((String)session.getAttribute("userRole") == "USER") {
+            model.addAttribute("score", applicants.getApplicantScore());
+            model.addAttribute("status", applicants.getSelectionStatus());
+        }
 
 
         model.addAttribute("countDirectors", countDirectors);
         model.addAttribute("countProducers", countProducers);
         model.addAttribute("countApplicants", countApplicants);
         model.addAttribute("totalEvents", countEvents);
+
+        model.addAttribute("role", (String)session.getAttribute("userRole"));
 
         return "Dashboard";
     }
@@ -138,6 +147,29 @@ public class WebController {
     }
 
 
+
+    @GetMapping("/viewApplicants")
+    public String viewApplicants(Model model, HttpSession session) {
+
+        String userRole = (String) session.getAttribute("userRole");
+        Users userProfile = (Users) session.getAttribute("userprofile");
+
+        List<Applicants> applicants = new ArrayList<>();
+
+        if(userRole.equals("DIRECTOR")) {
+            applicants = applicantRepository.findApplicantsForDirectors(Status.valueOf("AUDITION"), userProfile.getName());
+        }
+
+        else if(userRole.equals("PRODUCER")) {
+            applicants = applicantRepository.findApplicantsForProducers(Status.valueOf("AUDITION"), userProfile.getFullName());
+        }
+
+        model.addAttribute("allUsers", applicants);
+        return "viewApplicants";
+    }
+
+
+
     @GetMapping("/viewEvents")
     public String viewEvents(Model model, HttpSession session) {
 
@@ -158,6 +190,7 @@ public class WebController {
         else if(userRole.equals("USER")) {
             Users users = usersRepository.findByName(userName);
             events = eventsRepository.findEventsByApplicants(users.getFullName());
+            log.info(events.toString());
         }
 
         model.addAttribute("allevents", events);

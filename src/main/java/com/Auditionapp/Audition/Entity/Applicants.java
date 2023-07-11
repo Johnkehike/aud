@@ -32,4 +32,19 @@ public class Applicants {
     private String email;
 
     private String phone;
+
+    @Column(name = "user_name")
+    private String userName;
+
+    @Column(name = "message")
+    private String message;
+
+    @Enumerated(EnumType.STRING)
+    private ApplicantSelection selectionStatus;
+
+    @Transient
+    private int score;
+
+    @Transient
+    private String applicantStatus;
 }

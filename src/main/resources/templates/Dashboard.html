@@ -31,12 +31,41 @@
 
     }
 
-    .white-box {
 
+ .far {
+    font-size : 150px;
+    color : green;
+    justify-content : center;
+    align-items : center;
+    display : flex;
     }
+
+
 </style>
 
 <body>
+
+
+
+<div class="modal" id="myModal" th:if="${session.userRole eq 'USER' && #strings.equals(status, 'SELECTED')}">
+<!--<div class="modal" id="myModal">-->
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">Acceptance Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body">
+                <p><i class="far fa-thumbs-up fa-2xl"></i> </p>
+                <p>Congratulations! You've been selected for the role. Please expect further communication via mail.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
@@ -81,7 +110,7 @@
                 <!-- End Logo -->
                 <!-- ============================================================== -->
                 <div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
-                   
+
                     <!-- ============================================================== -->
                     <!-- Right side toggle and nav items -->
                     <!-- ============================================================== -->
@@ -174,6 +203,15 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item">
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/web/viewApplicants}"
+                               aria-expanded="false">
+                                <i class="fa fa-columns" aria-hidden="true"></i>
+                                <span class="hide-menu">View Applicants</span>
+                            </a>
+                        </li>
+
+
 
                     </ul>
 
@@ -209,13 +247,22 @@
                         </li>
 
 
+<!--                        <li class="sidebar-item">-->
+<!--                            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/web/viewDirectors}"-->
+<!--                               aria-expanded="false">-->
+<!--                                <i class="fa fa-columns" aria-hidden="true"></i>-->
+<!--                                <span class="hide-menu">View Applicants</span>-->
+<!--                            </a>-->
+<!--                        </li>-->
+
                         <li class="sidebar-item">
-                            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/web/viewDirectors}"
+                            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/web/viewApplicants}"
                                aria-expanded="false">
                                 <i class="fa fa-columns" aria-hidden="true"></i>
                                 <span class="hide-menu">View Applicants</span>
                             </a>
                         </li>
+
 
 
                     </ul>
@@ -284,7 +331,7 @@
                     <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12 mt-3">
                         <div class="d-md-flex">
                             <ol class="breadcrumb ms-auto">
-                                <li><a href="#" class="fw-normal">Dashboard</a></li>
+                                <li><a href="#" class="fw-normal" th:text="${role}"></a></li>
                             </ol>
                         </div>
                     </div>
@@ -406,21 +453,41 @@
 </div>
 
                 <div class="row justify-content-center"th:if="${session.userRole eq 'USER'}">
-                    <div class="col-lg-12 col-md-12">
 
-                        <div class="col-lg-4 col-md-12">
+
+                    <div class="col-lg-4 col-md-12">
+                        <div class="white-box analytics-info">
+                            <h3 class="box-title">Total Events Applied</h3>
+                            <ul class="list-inline two-part d-flex align-items-center mb-0">
+                                <li>
+                                    <div id="sparklinedash"><canvas width="67" height="30"
+                                                                    style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
+                                    </div>
+                                </li>
+                                <!--                                <li class="ms-auto"><span class="counter text-success" th:text="${}"></span></li>-->
+                                <li class="ms-auto"><span class="counter text-purple" th:text="${totalEvents}"></span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-4 col-md-12">
                             <div class="white-box analytics-info">
-                                <h3 class="box-title">Total Events Applied</h3>
+                                <h3 class="box-title">Total Scores Obtained</h3>
                                 <ul class="list-inline two-part d-flex align-items-center mb-0">
                                     <li>
                                         <div id="sparklinedash2"><canvas width="67" height="30" style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas>
                                         </div>
                                     </li>
-                                    <li class="ms-auto"><span class="counter text-purple" th:text="${totalEvents}"></span></li>
+                                    <li class="ms-auto"><span class="counter text-purple" th:text="${score}"></span></li>
                                 </ul>
                             </div>
                         </div>
-                    </div>
+
+
+
+
 
                 </div>
 
@@ -451,6 +518,13 @@
     <script src="/plugins/bower_components/chartist/dist/chartist.min.js"></script>
     <script src="/plugins/bower_components/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
     <script src="/js/pages/dashboards/dashboard1.js"></script>
+
+<script>
+    $(document).ready(function() {
+      $('#myModal').modal('show');
+    });
+  </script>
+
 </body>
 
 </html>
