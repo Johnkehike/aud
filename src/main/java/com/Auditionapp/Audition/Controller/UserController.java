@@ -103,4 +103,45 @@ public class UserController {
     }
 
 
+    @PostMapping("/passwordchange")
+    public ResponseEntity<ResponseMessage> changePassword(@RequestParam("password") String oldPassword,@RequestParam("newpassword") String newPassword,
+                                 @RequestParam("newpassword1") String newPassword1, HttpSession session, ResponseMessage responses) {
+
+
+        String userName = (String) session.getAttribute("email");
+        Users user = usersRepository.findByName(userName);
+
+        if (user != null || BCrypt.checkpw(oldPassword,user.getPassword())) {
+            String hashed_password = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            user.setPassword(hashed_password);
+            usersRepository.save(user);
+
+            try {
+                String htmlContent = "<html><body>" +
+                        "<p>Hi " + user.getName() + ",</p>" +
+                        "<p>Your password have been changed successfully on the Gian Carlo Auditioning app. </p>" +
+                        "</body></html>";
+
+                emailSenderService.sendEmail(user.getEmail(), "Password change update", htmlContent);
+            }
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+            responses.setCode("00");
+            responses.setMessage("Password changed successfully");
+            return new ResponseEntity<>(responses, HttpStatus.OK);
+        }
+
+        else {
+            responses.setCode("90");
+            responses.setMessage("Password change failed");
+            return new ResponseEntity<>(responses, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
+
+    }
+
+
 }

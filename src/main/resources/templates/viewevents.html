@@ -86,6 +86,11 @@ font-size: small;
     cursor: pointer;
 }
 
+#submit-role-form {
+
+  background-color: green;
+}
+
 
   </style>
 </head>
@@ -394,7 +399,7 @@ font-size: small;
 
                     <span th:if="${session.userRole eq 'PRODUCER'}">
 
-                      <a href="#" th:data-row-id="${events.eventId}" id="add-role" class="btn btn-group-sm">
+                      <a href="#" th:data-row-id="${events.eventId}" class="add-role btn btn-group-sm">
                         <i class="fas fa-edit" title="Roles" aria-hidden="true"></i>
                   </a>
                   </span>
@@ -476,14 +481,6 @@ font-size: small;
 
 
 
-
-
-
-
-
-
-
-
               <div class="modal fade" id="detailsModal-comments" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                   <div class="modal-content">
@@ -538,9 +535,9 @@ font-size: small;
               <div class="modal-body">
                 <form class="needs-validation" id="rolesForm">
                   <div class="form-group">
-                    <label for="roles">Add New Roles(Separated by Comma)</label>
+                    <label for="roles">Add New Role</label>
 
-                    <input type="text" id="new-roles" placeholder="Enter roles, each role separated by comma">
+                    <input type="text" id="new-roles" placeholder="Enter role" autocomplete="off">
 
                   </div>
 
@@ -665,7 +662,7 @@ $(document).ready(function() {
 
 
 
-    $('#add-role').click(function(e) {
+    $('.add-role').click(function(e) {
 
   e.preventDefault();
 

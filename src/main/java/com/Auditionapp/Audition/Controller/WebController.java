@@ -123,6 +123,15 @@ public class WebController {
     }
 
 
+    @GetMapping("/password")
+    public String ChangePassword(HttpSession session, Model model) {
+
+        String userName = (String) session.getAttribute("email");
+
+        return "changepassword";
+    }
+
+
 
     @GetMapping("/viewDirectors")
     public String viewDirectors(Model model, HttpSession session) {

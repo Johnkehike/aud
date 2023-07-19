@@ -63,11 +63,22 @@ public class EventController {
 
         Optional<Events> events1 = eventsRepository.findById(events.getEventId());
         if(events1.isPresent()){
-            events1.get().setRoles(events.getRoles());
-            eventsRepository.save(events1.get());
-            responseMessage.setCode("00");
-            responseMessage.setMessage("Roles Successfully added");
-            return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+            if(events1.get().getRoles() != null) {
+                events1.get().setRoles(events1.get().getRoles()+","+events.getRoles());
+                eventsRepository.save(events1.get());
+                responseMessage.setCode("00");
+                responseMessage.setMessage("Roles Successfully added");
+                return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+            }
+
+            else {
+                events1.get().setRoles(events.getRoles());
+                eventsRepository.save(events1.get());
+                responseMessage.setCode("00");
+                responseMessage.setMessage("Roles Successfully added");
+                return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+
+            }
         }
 
 

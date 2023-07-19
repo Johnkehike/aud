@@ -106,6 +106,7 @@ public class ApplicantsController {
         String id = RandomGenertor.generateNumericRef(3);
 
         Applicants applicants1 = applicantRepository.findByEmail(email);
+        Users userCheck = usersRepository.findByFullName(producer);
         if(applicants1 != null) {
             redirectAttributes.addFlashAttribute("status", "Applicant already applied for an event");
             return "redirect:/signup/"+producer;
@@ -149,7 +150,27 @@ public class ApplicantsController {
             applicants.setApplicantId(users1.getUserId());
             applicantRepository.save(applicants);
 
-            SendMail(email, users.getName());
+            String htmlContent = "<html><body>" +
+                    "<p>Hi " + users.getName() + ",</p>" +
+                    "<p>You have been profiled successfully on Gian Carlo Auditioning app. </p>" +
+                    "<p>Please use your User ID and password below to login </p>"
+                    +"<p> You can login using this url "+ homePage + "</p>"+
+                    "</body></html>";
+
+            String htmlContentToProducer = "<html><body>" +
+                    "<p>Hi " + producer + ",</p>" +
+                    "<p>You have a new applicant applying for the role of "+roleApplied+". </p>" +
+                    "<p>Please see message sent to you below by the applicant and login to view uploaded files </p>"
+                    +"<p><b>"+message+"</b></p>"+
+                    "</body></html>";
+
+            try {
+                SendMail(email, "Profile Creation Update", htmlContent);
+                SendMail(userCheck.getEmail(), "Application Notification", htmlContentToProducer);
+            }
+            catch(Exception e) {
+                log.info("Exception experienced is "+e.getMessage());
+            }
 
             redirectAttributes.addFlashAttribute("status", "Records Saved Successfully. Please login");
             return "redirect:/home";
@@ -178,18 +199,11 @@ public class ApplicantsController {
 
 
 
-    public void SendMail(String recipientEmail, String recipientName) {
+    public void SendMail(String recipientEmail, String subject, String htmlContent) {
 
 
         try {
-            String htmlContent = "<html><body>" +
-                    "<p>Hi " + recipientName + ",</p>" +
-                    "<p>You have been profiled successfully on Gian Carlo Auditioning app. </p>" +
-                    "<p>Please use your User ID and password below to login </p>"
-                    +"<p> You can login using this url "+ homePage + "</p>"+
-                    "</body></html>";
-
-            emailSenderService.sendEmail(recipientEmail, "Profile Creation Update", htmlContent);
+            emailSenderService.sendEmail(recipientEmail, subject, htmlContent);
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
