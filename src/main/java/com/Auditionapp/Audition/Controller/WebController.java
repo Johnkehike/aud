@@ -5,7 +5,6 @@ import com.Auditionapp.Audition.Entity.*;
 import com.Auditionapp.Audition.Repository.ApplicantRepository;
 import com.Auditionapp.Audition.Repository.EventsRepository;
 import com.Auditionapp.Audition.Repository.UsersRepository;
-import com.Auditionapp.Audition.Repository.VisitorsRepository;
 import com.Auditionapp.Audition.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +33,6 @@ import java.util.List;
 @RequestMapping("/web")
 @Slf4j
 public class WebController {
-    @Autowired
-    private VisitorsRepository visitorsRepository;
 
     @Autowired
     private UserService userService;

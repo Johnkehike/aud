@@ -135,7 +135,7 @@ public class UserController {
 
         else {
             responses.setCode("90");
-            responses.setMessage("Password change failed");
+            responses.setMessage("Password change failed. Try again later");
             return new ResponseEntity<>(responses, HttpStatus.INTERNAL_SERVER_ERROR);
 
         }

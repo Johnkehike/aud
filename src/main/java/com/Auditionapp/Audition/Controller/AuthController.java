@@ -3,7 +3,6 @@ package com.Auditionapp.Audition.Controller;
 import com.Auditionapp.Audition.Entity.*;
 import com.Auditionapp.Audition.Repository.EventsRepository;
 import com.Auditionapp.Audition.Repository.UsersRepository;
-import com.Auditionapp.Audition.Repository.VisitorsRepository;
 import com.Auditionapp.Audition.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 
@@ -29,8 +22,6 @@ import java.util.List;
 public class AuthController {
 
 
-    @Autowired
-    private VisitorsRepository visitorsRepository;
 
     @Autowired
     private UserService userService;
