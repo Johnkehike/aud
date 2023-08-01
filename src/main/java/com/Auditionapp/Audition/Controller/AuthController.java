@@ -39,6 +39,11 @@ public class AuthController {
         return "Login";
     }
 
+    @GetMapping("/")
+    public String landingPage() {
+        return "Login";
+    }
+
 
     @GetMapping("/signup/{producer}")
     private String viewSignup(@PathVariable("producer") String producer, Model model, HttpSession session) {
@@ -149,6 +154,7 @@ public class AuthController {
         } else {
 
             session.setAttribute("user", user.getName());
+            session.setAttribute("userFullName", user.getFullName());
             session.setAttribute("userRole", String.valueOf(user.getRole()));
             session.setAttribute("email", email);
             session.setAttribute("userprofile", user);

@@ -134,18 +134,19 @@ public class WebController {
     public String viewDirectors(Model model, HttpSession session) {
 
         String userRole = (String) session.getAttribute("userRole");
+        Users userprofile = (Users) session.getAttribute("userprofile");
 
         List<Users> users = new ArrayList<>();
         if(userRole.equals("ADMIN")) {
-          users = usersRepository.findAllRoles("DIRECTOR");
+          users = usersRepository.findAllRoles("DIRECTOR", userprofile.getFullName());
         }
 
         else if(userRole.equals("DIRECTOR")) {
-            users = usersRepository.findAllRoles("PRODUCER");
+            users = usersRepository.findAllRoles("PRODUCER", userprofile.getFullName());
         }
 
         else if(userRole.equals("PRODUCER")) {
-            users = usersRepository.findAllRoles("USER");
+            users = usersRepository.findAllRoles("USER", userprofile.getFullName());
         }
 
         model.addAttribute("allUsers", users);
@@ -181,11 +182,13 @@ public class WebController {
 
         String userRole = (String) session.getAttribute("userRole");
         String userName = (String) session.getAttribute("user");
+        String fullName = (String) session.getAttribute("userFullName");
+
 
         List<Events> events = new ArrayList<>();
 
         if(userRole.equals("DIRECTOR")) {
-            events = eventsRepository.findByDirectorUserId(userName);
+            events = eventsRepository.findByDirectorUserId(fullName);
         }
 
         else if(userRole.equals("PRODUCER")) {
@@ -198,6 +201,9 @@ public class WebController {
             events = eventsRepository.findEventsByApplicants(users.getFullName());
             log.info(events.toString());
         }
+
+        String role = (String) session.getAttribute("userRole");
+        model.addAttribute("userRole", role);
 
         model.addAttribute("allevents", events);
         return "viewevents";
@@ -247,8 +253,8 @@ public class WebController {
 
     @GetMapping("/createEvent")
     public String createEvent(Model model) {
-        List<Users> allUsers = usersRepository.findAllRoles("PRODUCER");
-        model.addAttribute("users", allUsers);
+//        List<Users> allUsers = usersRepository.findAllRoles("PRODUCER");
+//        model.addAttribute("users", allUsers);
         return "CreateEvent";
     }
 

@@ -47,4 +47,7 @@ public class Applicants {
 
     @Transient
     private String applicantStatus;
+
+    @Column(name = "theater_director")
+    private String theaterDirector;
 }

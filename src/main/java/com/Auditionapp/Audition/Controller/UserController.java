@@ -44,20 +44,23 @@ public class UserController {
     private String homePage;
 
     @PostMapping("/save")
-    public ResponseEntity<ResponseMessage> profileUser(@RequestBody Users users, ResponseMessage responses) {
+    public ResponseEntity<ResponseMessage> profileUser(@RequestBody Users users, ResponseMessage responses, HttpSession session) {
 
-        if(users.getRoleTest().equals("THEATRE DIRECTOR")) {
+        if(users.getRoleTest().equals("THEATER DIRECTOR")) {
             users.setRoleTest("DIRECTOR");
         }
+        Users userProfile = (Users) session.getAttribute("userprofile");
 
         users.setFullName(users.getName());
         String id = RandomGenertor.generateNumericRef(3);
         users.setName(users.getName().replace(" ", "").toLowerCase()+id);
 
+
         String rawPassword = RandomGenertor.generateRandomString("");
         String customFileName = imageUploadPath+users.getName()+".jpg";
 
         users.setImagePath(customFileName);
+        users.setCreatedBy(userProfile.getFullName());
 
         String hashed_password = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
         users.setPassword(hashed_password);
@@ -67,7 +70,7 @@ public class UserController {
             usersRepository.save(users);
             responses.setMessage("User Saved Successfully");
             responses.setCode("00");
-            SendMail(users.getEmail(), users.getName(), rawPassword);
+            SendMail(users.getEmail(), users.getName(), rawPassword,users.getPhone_number(), users.getAddress(), String.valueOf(users.getRole()),users.getFullName());
             return new ResponseEntity<>(responses, HttpStatus.OK);
 
         }
@@ -81,16 +84,24 @@ public class UserController {
     }
 
 
-    public void SendMail(String recipientEmail, String recipientName, String password) {
+    public void SendMail(String recipientEmail, String recipientName, String password, String telephone,
+                         String address, String role, String fullName) {
 
 
         try {
             String htmlContent = "<html><body>" +
                     "<p>Hi " + recipientName + ",</p>" +
                     "<p>You have been profiled successfully on Gian Carlo Auditioning app. </p>" +
-                    "<p>Please use your Email ID and password below to login </p>"
-                    +"<p><b> " + password  +"</b></p>"+
+                    "<p>Please use your Username and password given below to login </p>"
+                    +"<p><b>Password: " + password  +"</b></p>"+
                     "<p> You can login using this url "+ homePage + "</p>"+
+                    "<p> See below for more details </p>"+
+                    "<p> Username: "+recipientName+"</p>"+
+                    "<p> Password: "+password+"</p>"+
+                    "<p> Full Name: "+fullName+"</p>"+
+                    "<p> Telephone: "+telephone+"</p>"+
+                    "<p> Address: "+address+"</p>"+
+                    "<p> Title: "+role+"</p>"+
                     "</body></html>";
 
             emailSenderService.sendEmail(recipientEmail, "Profile Creation Update", htmlContent);

@@ -135,6 +135,7 @@ public class ApplicantsController {
             applicants.setPhone(areaCode+phone);
             applicants.setMessage(message);
             applicants.setSelectionStatus(ApplicantSelection.valueOf("PENDING"));
+            applicants.setTheaterDirector(userCheck.getCreatedBy());
 
             users.setPassword(hashed_password);
             users.setRole(Roles.valueOf("USER"));
@@ -142,6 +143,7 @@ public class ApplicantsController {
             users.setEmail(email);
             users.setFullName(fullName);
             users.setName(fullName.replace(" ", "").toLowerCase()+id);
+            users.setCreatedBy(userCheck.getFullName());
 
             applicants.setUserName(users.getName());
 
@@ -153,7 +155,7 @@ public class ApplicantsController {
             String htmlContent = "<html><body>" +
                     "<p>Hi " + users.getName() + ",</p>" +
                     "<p>You have been profiled successfully on Gian Carlo Auditioning app. </p>" +
-                    "<p>Please use your User ID and password below to login </p>"
+                    "<p>Please use your User ID and your created password below to login </p>"
                     +"<p> You can login using this url "+ homePage + "</p>"+
                     "</body></html>";
 

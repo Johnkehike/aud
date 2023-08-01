@@ -192,7 +192,7 @@ font-size: small;
             <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/web/viewDirectors}"
                aria-expanded="false">
               <i class="fa fa-user" aria-hidden="true"></i>
-              <span class="hide-menu">View Theatre Directors</span>
+              <span class="hide-menu">View Theater Directors</span>
             </a>
           </li>
 
@@ -369,8 +369,9 @@ font-size: small;
                 <thead>
                 <tr>
                   <th class="border-top-0">Event Name</th>
-                  <th class="border-top-0">Name of Director</th>
+                  <th class="border-top-0" th:text="${userRole == 'ADMIN' || userRole == 'USER' ? 'Name of Theater Director' : (userRole == 'DIRECTOR' ? 'Name of Producer' : 'Name of Theater Director')}"></th>
                   <th class="border-top-0">Location</th>
+                  <th class="border-top-0">Roles</th>
                   <th class="border-top-0">Status</th>
                   <th class="border-top-0">Action</th>
                 </tr>
@@ -380,6 +381,7 @@ font-size: small;
                   <td th:text="${events.eventName}" style="text-align: center;"></td>
                   <td th:text="${events.directorUserId}" style="text-align: center;"></td>
                   <td th:text="${events.location}" style="text-align: center;"></td>
+                  <td th:text="${events.rolesCount}" style="text-align: center;"></td>
                   <td th:text="${events.status}" style="text-align: center;"></td>
 
                   <td style="text-align: center;">
@@ -388,7 +390,7 @@ font-size: small;
                     </a>
 
                     <span th:if="${session.userRole eq 'DIRECTOR'}">
-                    <a th:href="@{/web/event/{id}/delete(id=${events.eventId})}" onclick="return confirm('Do you want to delete User?', 'yes');" id="delete" class="btn btn-group-sm">
+                    <a th:href="@{/web/event/{id}/delete(id=${events.eventId})}" onclick="return confirm('Do you want to delete Event?', 'yes');" id="delete" class="btn btn-group-sm">
                     <i class="fas fa-trash-alt" title="Delete" aria-hidden="true"></i>
                     </a>
 
@@ -417,7 +419,7 @@ font-size: small;
               </div>
 
 
-              <div th:if="${session.userRole eq 'DIRECTOR'}">
+              <div th:if="${session.userRole eq 'PRODUCER'}">
                 <a th:href="@{/web/createEvent}" id="create" class="btn btn-group-sm">
                   <i class="fas fa-plus" aria-hidden="true"></i>
                   <span class="hide-menu">Create New Event</span>
@@ -461,6 +463,11 @@ font-size: small;
                         <div class="form-group">
                           <label for="field6">Director</label>
                           <input type="text" class="form-control" id="field6" placeholder="Director" disabled />
+                        </div>
+
+                        <div class="form-group">
+                          <label for="field6">Roles</label>
+                          <input type="text" class="form-control" id="field7" placeholder="Roles" disabled />
                         </div>
 
                         <!-- Form fields for displaying details -->
@@ -626,6 +633,7 @@ $(document).ready(function() {
   $('#detailsForm #field4').val(rowData.producers);
   $('#detailsForm #field5').val(rowData.status);
   $('#detailsForm #field6').val(rowData.directorUserId);
+  $('#detailsForm #field7').val(rowData.roles);
 
     $('#detailsModal').modal('show');
   });
@@ -713,7 +721,7 @@ $(document).ready(function() {
 
           $('#loader').hide();
 
-        fireSuccessMessage("User Successfully updated").then(() => {
+        fireSuccessMessage("Event Successfully updated").then(() => {
 
                 window.location.href = '/web/viewEvents';
         });
@@ -763,9 +771,16 @@ $(document).ready(function() {
 
           $('#loader2').hide();
 
-          fireSuccessMessage("Roles Successfully created").then(() => {
-                window.location.href = '/web/viewEvents';
-        });
+<!--          fireSuccessMessage("Roles Successfully created").then(() => {-->
+<!--                window.location.href = '/web/viewEvents';-->
+<!--        });-->
+
+        fireSuccessMessage("Roles Successfully created");
+
+         setTimeout(function() {
+        location.reload();
+      }, 2000);
+
 
         },
         error: function(jqXHR, textStatus, errorThrown) {

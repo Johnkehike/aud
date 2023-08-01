@@ -11,26 +11,6 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeRequests()
-//                .antMatchers("/**").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin()
-//                .loginPage("/home")
-//                .defaultSuccessUrl("/web/dashboard")
-//                .permitAll()
-//                .and()
-//                .logout()
-//                .permitAll()
-//                .and()
-//                .sessionManagement()
-//                .invalidSessionUrl("/home")
-//                .maximumSessions(1)
-//                .expiredUrl("/home?expired")
-//                .and()
-//                .and()
-//                .csrf().disable();
 
         http
                 .authorizeRequests()
@@ -38,7 +18,7 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/home")
+                .loginPage("/")
                 .and()
                 .formLogin()
                 .loginPage("/signup/{producer}")
@@ -49,9 +29,9 @@ public class WebConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .sessionManagement()
-                .invalidSessionUrl("/home")
+                .invalidSessionUrl("/")
                 .maximumSessions(1)
-                .expiredUrl("/home?expired")
+                .expiredUrl("/")
                 .and()
                 .and()
                 .csrf().disable();

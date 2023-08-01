@@ -18,6 +18,8 @@ public class EmailSenderService {
     private JavaMailSender mailSender;
 
 
+
+
         public void sendEmail(String toEmail, String subject, String body) throws MessagingException {
 
             MimeMessage message = mailSender.createMimeMessage();
@@ -25,7 +27,7 @@ public class EmailSenderService {
             // Pass true to indicate you need a multipart message
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-            helper.setFrom("davidnwoji@gmail.com");
+            helper.setFrom("info@mygiancarlo.com");
             helper.setTo(toEmail);
             helper.setText(body, true);
             helper.setSubject(subject);

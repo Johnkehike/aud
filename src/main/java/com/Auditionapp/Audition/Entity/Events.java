@@ -36,10 +36,12 @@ public class Events {
 
     private String producers;
 
-    @Transient
-    private List<String> producerList;
+//    @Transient
+//    private List<String> producerList;
 
     private String startDate;
 
     private String roles;
+
+    private int rolesCount;
 }

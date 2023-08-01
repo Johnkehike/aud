@@ -3,7 +3,9 @@ package com.Auditionapp.Audition.Controller;
 import com.Auditionapp.Audition.Entity.Events;
 import com.Auditionapp.Audition.Entity.ResponseMessage;
 import com.Auditionapp.Audition.Entity.Status;
+import com.Auditionapp.Audition.Entity.Users;
 import com.Auditionapp.Audition.Repository.EventsRepository;
+import com.Auditionapp.Audition.Repository.UsersRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import java.util.Optional;
 @RequestMapping("/event")
 @Slf4j
 public class EventController {
+    @Autowired
+    private UsersRepository usersRepository;
 
     @Autowired
     EventsRepository eventsRepository;
@@ -31,12 +35,13 @@ public class EventController {
                                                        HttpSession session) {
 
 
-        log.info("Payload receied is "+events);
-        List<String> producers = events.getProducerList();
-        String joinedString = String.join(", ", producers);
+        log.info("Payload received is "+events);
+//        List<String> producers = events.getProducerList();
+//        String joinedString = String.join(", ", producers);
 
-        events.setProducers(joinedString);
-        events.setDirectorUserId((String) session.getAttribute("user"));
+        Users userProfile = (Users) session.getAttribute("userprofile");
+        events.setProducers(userProfile.getFullName());
+        events.setDirectorUserId(userProfile.getCreatedBy());
         events.setStatus(Status.valueOf(events.getStatusTest()));
 
         try {
@@ -65,6 +70,7 @@ public class EventController {
         if(events1.isPresent()){
             if(events1.get().getRoles() != null) {
                 events1.get().setRoles(events1.get().getRoles()+","+events.getRoles());
+                events1.get().setRolesCount(events1.get().getRolesCount()+1);
                 eventsRepository.save(events1.get());
                 responseMessage.setCode("00");
                 responseMessage.setMessage("Roles Successfully added");
@@ -73,6 +79,7 @@ public class EventController {
 
             else {
                 events1.get().setRoles(events.getRoles());
+                events1.get().setRolesCount(1);
                 eventsRepository.save(events1.get());
                 responseMessage.setCode("00");
                 responseMessage.setMessage("Roles Successfully added");

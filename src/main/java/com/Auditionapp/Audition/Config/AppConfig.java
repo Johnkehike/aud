@@ -31,6 +31,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
                     .addResourceHandler("/**")
                     .addResourceLocations("classpath:/static/")
                     .addResourceLocations("classpath:/uploaded-files/")
+                    .addResourceLocations("file:/home3/myauditi/etc/myauditions.us/Images/")
                     .addResourceLocations("file:C:\\Auditioning\\Images\\");
 
         }

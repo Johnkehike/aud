@@ -16,8 +16,8 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     List<Users> findAll(Sort sort);
 
 
-    @Query(value = "SELECT * FROM users WHERE role = :role", nativeQuery = true)
-    List<Users> findAllRoles(@Param("role") String role);
+    @Query(value = "SELECT * FROM users WHERE role = :role AND created_by = :user", nativeQuery = true)
+    List<Users> findAllRoles(@Param("role") String role, @Param("user") String createdBy);
 
     @Query(value = "SELECT COUNT(*) FROM users WHERE role = :role", nativeQuery = true)
     int countRoles(@Param("role") String role);
