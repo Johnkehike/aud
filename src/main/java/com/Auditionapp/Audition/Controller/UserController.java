@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -61,23 +62,37 @@ public class UserController {
 
         users.setImagePath(customFileName);
         users.setCreatedBy(userProfile.getFullName());
+        users.setDateCreated(LocalDateTime.now());
 
         String hashed_password = BCrypt.hashpw(rawPassword, BCrypt.gensalt());
         users.setPassword(hashed_password);
 
         users.setRole(Roles.valueOf(users.getRoleTest()));
-        try {
-            usersRepository.save(users);
-            responses.setMessage("User Saved Successfully");
-            responses.setCode("00");
-            SendMail(users.getEmail(), users.getName(), rawPassword,users.getPhone_number(), users.getAddress(), String.valueOf(users.getRole()),users.getFullName());
-            return new ResponseEntity<>(responses, HttpStatus.OK);
 
+        Users users1 = usersRepository.findByEmail(users.getEmail());
+        if(users1 != null) {
+            responses.setMessage("Email already exists.");
+            responses.setCode("90");
+            return new ResponseEntity<>(responses, HttpStatus.OK);
         }
-        catch(Exception e) {
-            responses.setMessage("Error saving user");
-            responses.setCode("96");
-            return new ResponseEntity<>(responses, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        else {
+            try {
+                usersRepository.save(users);
+                responses.setMessage("User Saved Successfully");
+                responses.setCode("00");
+                if (users.getRole().equals("DIRECTOR")) {
+                    users.setRole(Roles.valueOf("THEATER DIRECTOR"));
+                }
+                SendMail(users.getEmail(), users.getName(), rawPassword, users.getPhone_number(), users.getAddress(), String.valueOf(users.getRole()), users.getFullName());
+                return new ResponseEntity<>(responses, HttpStatus.OK);
+
+            } catch (Exception e) {
+                responses.setMessage("Error saving user");
+                responses.setCode("96");
+                return new ResponseEntity<>(responses, HttpStatus.INTERNAL_SERVER_ERROR);
+
+            }
 
         }
 
@@ -90,7 +105,7 @@ public class UserController {
 
         try {
             String htmlContent = "<html><body>" +
-                    "<p>Hi " + recipientName + ",</p>" +
+                    "<p>Hi " + fullName + ",</p>" +
                     "<p>You have been profiled successfully on Gian Carlo Auditioning app. </p>" +
                     "<p>Please use your Username and password given below to login </p>"
                     +"<p><b>Password: " + password  +"</b></p>"+

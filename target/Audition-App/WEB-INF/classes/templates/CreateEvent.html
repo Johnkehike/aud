@@ -42,7 +42,7 @@
 <!--    }-->
 
     input::placeholder {
-    color: black;
+    color: white;
     opacity: 0.5; /* Adjust the opacity value as needed */
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   }
@@ -75,6 +75,7 @@
       }
       h2 {
       margin: 0 0 0 8px;
+      color: white;
       }
       .main-block {
       display: flex;
@@ -110,6 +111,7 @@
       border: none;
       border-bottom: 1px solid #eee;
       width: 100%;
+      color: white;
       }
       option:focus {
       border: none;
@@ -439,10 +441,10 @@
                   <input type="text" id="location" name="name" placeholder="Location">
                   <input type="date" id="date" name="name" placeholder="Date">
                   <input type="text" id="status" name="name" placeholder="Status" value="AUDITION" readonly>
-                    <select id="producer" multiple>
-                      <option>Select Producer</option>
-                      <option th:each="user : ${users}" th:value="${user.fullName}" th:text="${user.fullName}"></option>
-                    </select>
+<!--                    <select id="producer" multiple>-->
+<!--                      <option>SELECT PRODUCER</option>-->
+<!--                      <option th:each="user : ${users}" th:value="${user.fullName}" th:text="${user.fullName}"></option>-->
+<!--                    </select>-->
 
 
                 </div>
@@ -507,7 +509,7 @@
       var location = $('#location').val();
       var date = $('#date').val();
       var status = $('#status').val();
-      var producer = $('#producer').val();
+<!--      var producer = $('#producer').val();-->
 
 
       var registrationReq = {};
@@ -515,7 +517,7 @@
       registrationReq.location= location;
       registrationReq.startDate= date;
       registrationReq.statusTest= status;
-      registrationReq.producerList= producer;
+<!--      registrationReq.producerList= producer;-->
 
       var req = JSON.stringify(registrationReq);
 

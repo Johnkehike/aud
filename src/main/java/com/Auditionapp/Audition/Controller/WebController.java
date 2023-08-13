@@ -54,19 +54,17 @@ public class WebController {
 
 
 
-
-
     @GetMapping("/dashboard")
     public String dashboardPage(Model model, HttpSession session) {
 
 
         Users userProfile = (Users) session.getAttribute("userprofile");
+        int countEvents;
 
 
         int countDirectors = usersRepository.countRoles("DIRECTOR");
         int countProducers = usersRepository.countRoles("PRODUCER");
         int countApplicants = usersRepository.countRoles("USER");
-        int countEvents = applicantRepository.countDistinctEvents();
         Applicants applicants = applicantRepository.findByEmail(userProfile.getEmail());
 
         if((String)session.getAttribute("userRole") == "USER") {
@@ -74,11 +72,24 @@ public class WebController {
             model.addAttribute("status", applicants.getSelectionStatus());
         }
 
+        if((String)session.getAttribute("userRole") == "DIRECTOR") {
+            List<Events> events = eventsRepository.findByDirectorUserId(userProfile.getFullName());
+            countEvents = events.size();
+            model.addAttribute("totalEvents", countEvents);
+        }
 
-        model.addAttribute("countDirectors", countDirectors);
+        if((String)session.getAttribute("userRole") == "PRODUCER") {
+            List<Events> events2 = eventsRepository.findEventsByProducer(userProfile.getFullName());
+            countEvents = events2.size();
+            model.addAttribute("totalEvents", countEvents);
+
+        }
+
+
+
+            model.addAttribute("countDirectors", countDirectors);
         model.addAttribute("countProducers", countProducers);
         model.addAttribute("countApplicants", countApplicants);
-        model.addAttribute("totalEvents", countEvents);
 
         model.addAttribute("role", (String)session.getAttribute("userRole"));
 
@@ -164,7 +175,7 @@ public class WebController {
         List<Applicants> applicants = new ArrayList<>();
 
         if(userRole.equals("DIRECTOR")) {
-            applicants = applicantRepository.findApplicantsForDirectors(Status.valueOf("AUDITION"), userProfile.getName());
+            applicants = applicantRepository.findApplicantsForDirectors(Status.valueOf("AUDITION"), userProfile.getFullName());
         }
 
         else if(userRole.equals("PRODUCER")) {
@@ -313,6 +324,16 @@ public class WebController {
         redirectAttributes.addFlashAttribute("success", "Image Uploaded Successfully");
         return "redirect:/web/profile";
     }
+
+
+
+    @GetMapping("/openjobs")
+    public String applyForJobs(Model model) {
+        List<Events> eventList =  eventsRepository.findEventsListByStatus("AUDITION");
+        model.addAttribute("eventList", eventList);
+        return "apply";
+    }
+
 
 
 

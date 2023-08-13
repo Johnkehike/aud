@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -50,4 +51,11 @@ public class Applicants {
 
     @Column(name = "theater_director")
     private String theaterDirector;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "date_applied")
+    private LocalDateTime dateApplied;
 }
+

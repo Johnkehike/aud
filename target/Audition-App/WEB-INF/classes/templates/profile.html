@@ -310,11 +310,12 @@
                             <div class="user-btm-box mt-5 d-md-flex">
                                 <div class="col-md-12 col-sm-8 text-center">
 
-                                    <form id="uploadImage" method="POST" th:action="@{/web/uploadImage}" enctype="multipart/form-data">
+                                    <form id="uploadImage" method="POST" th:action="@{/web/uploadImage}" enctype="multipart/form-data" onsubmit="return validateImage()">
                                         <button class="btn btn-success" onclick="document.getElementById('fileInput').click(); return false;">Click to Upload Picture</button>
                                         <input type="file" id="fileInput" name="file" style="display:none">
                                         <input type="submit" value="Submit" >
                                     </form>
+                                    <span>JPEG images only and max 1mb please</span>
 
                                 </div>
                             </div>
@@ -405,6 +406,25 @@
     <script src="/js/custom.js"></script>
 
     <script>
+
+function validateImage() {
+        var fileInput = document.getElementById('fileInput');
+        var file = fileInput.files[0];
+        if (file) {
+            var fileName = file.name.toLowerCase();
+            var fileSize = file.size / 1024 / 1024; // Convert size to MB
+            if (!fileName.endsWith('.jpg')) {
+                alert('Please upload a JPG file.');
+                return false; // Prevent form submission
+            } else if (fileSize > 1) {
+                alert('Please upload an image smaller than 1MB.');
+                return false; // Prevent form submission
+            }
+        }
+        return true; // Allow form submission
+    }
+
+
 $(document).ready(function() {
   // Hide the modify button initially
   $('#modify-button').hide();
@@ -421,7 +441,6 @@ $(document).ready(function() {
   });
 });
 </script>
-    Note: The hidden class in the HTML for the modify button is used to hide the button initially. The $('#modify-button').hide() in the JavaScript function hides the button initially, and $('#modify-button').show() shows it when the "Click to Modify Profile" button is clicked.
 
 
 

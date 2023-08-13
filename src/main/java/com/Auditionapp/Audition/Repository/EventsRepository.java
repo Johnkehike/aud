@@ -20,10 +20,12 @@ public interface EventsRepository extends JpaRepository<Events, Long> {
     @Query(value = "SELECT * FROM production_event WHERE producers LIKE CONCAT('%', :producer, '%') AND status = 'AUDITION'", nativeQuery = true)
     List<Events> findEventsByProducer(@Param("producer") String producer);
 
-
-
     @Query(value = "SELECT * FROM production_event WHERE producers LIKE CONCAT('%', :producer, '%') AND status = :status", nativeQuery = true)
     List<Events> findEventsByProducerAndStatus(@Param("producer") String producer, @Param("status") String status);
+
+
+    @Query(value = "SELECT * FROM production_event WHERE status = :status", nativeQuery = true)
+    List<Events> findEventsListByStatus(@Param("status") String status);
 
 
 //    @Query("SELECT e FROM Events e JOIN e.Applicants a WHERE a.applicantName = :name")

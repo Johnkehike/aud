@@ -22,12 +22,15 @@ public interface ApplicantRepository extends JpaRepository<Applicants, Long> {
 
     Applicants findByEmail(String email);
 
+    Applicants findByEmailAndEventName(String email, String event);
+
+
     void deleteByApplicantId(Long applicantId);
 
     @Query("SELECT COUNT(DISTINCT a.eventName) FROM Applicants a")
     int countDistinctEvents();
 
-    @Query("SELECT a FROM Applicants a JOIN Events e ON a.eventName = a.eventName WHERE e.status = :status AND e.directorUserId = :director")
+    @Query("SELECT a FROM Applicants a JOIN Events e ON a.eventName = e.eventName WHERE e.status = :status AND e.directorUserId = :director")
     List<Applicants> findApplicantsForDirectors(@Param("status") Status name, @Param("director") String director);
 
 

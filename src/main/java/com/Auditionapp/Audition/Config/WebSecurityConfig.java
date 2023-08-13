@@ -31,12 +31,12 @@ public class WebSecurityConfig implements Filter {
             long timeDifference = currentTime - lastAccessedTime;
             if (timeDifference > INACTIVITY_TIMEOUT) {
                 log.info("Session Timeout");
-//                session.setAttribute("sessionExpired", true);
 
-                ((HttpServletResponse) response).sendRedirect("/web/sessionExpired");
+
                 session.invalidate();
+                ((HttpServletResponse) response).sendRedirect("/web/sessionExpired");
+                return;
 
-//                return;
             }
         }
         chain.doFilter(request, response);

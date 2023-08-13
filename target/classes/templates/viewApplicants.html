@@ -30,6 +30,13 @@
 
   <style>
 
+        .column-wrap {
+            max-width: 300px; /* Adjust this value as needed */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            white-space: normal;
+        }
+
         #content-field {
     	background:url("../img/bg-2_blur.jpeg") no-repeat center;
     	box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
@@ -275,7 +282,7 @@ font-size: small;
 
 
           <li class="sidebar-item">
-            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/web/viewDirectors}"
+            <a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/web/viewApplicants}"
                aria-expanded="false">
               <i class="fa fa-columns" aria-hidden="true"></i>
               <span class="hide-menu">View Applicants</span>
@@ -358,9 +365,9 @@ font-size: small;
                   <th class="border-top-0">Theater Director</th>
                   <th class="border-top-0">Role Applied</th>
                   <th class="border-top-0">Current Score</th>
+                  <th class="border-top-0">Action</th>
                   <th class="border-top-0">Event Name</th>
                   <th class="border-top-0">Message</th>
-                  <th class="border-top-0">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -369,8 +376,6 @@ font-size: small;
                   <td th:text="${applicants.theaterDirector}" style="text-align: center;"></td>
                   <td th:text="${applicants.applicantRole}" style="text-align: center;"></td>
                   <td th:text="${applicants.applicantScore}" style="text-align: center;"></td>
-                  <td th:text="${applicants.eventName}" style="text-align: center;"></td>
-                  <td th:text="${applicants.message}" style="text-align: center;"></td>
                   <td style="text-align: center;">
 
 
@@ -385,7 +390,7 @@ font-size: small;
 
                     <span th:if="${session.userRole eq 'PRODUCER'}">
 
-                      <a href="#" th:data-row-id="${applicants.applicantId}" id="update" class="btn btn-group-sm">
+                      <a href="#" th:data-row-id="${applicants.applicantId}" id="update" class="btn btn-group-sm update">
                       <i class="fas fa-thumbs-up" title="Score" aria-hidden="true"></i>
                     </a>
 
@@ -395,6 +400,9 @@ font-size: small;
                     </span>
 
                   </td>
+
+                  <td class="column-wrap" th:text="${applicants.eventName}" style="text-align: center;"></td>
+                  <td class="column-wrap" th:text="${applicants.message}" style="text-align: center;"></td>
 
 
                 </tr>
@@ -753,7 +761,7 @@ $('#create-url').click(function(e) {
 
 
 
-  $('#update').click(function(e) {
+  $('.update').click(function(e) {
 
   e.preventDefault();
 

@@ -527,6 +527,12 @@ $(document).ready(function() {
 
           $('#loader').hide();
 
+        if(data == 'Email already exists.') {
+
+            fireErrorMessage("Error", data);
+
+        }
+
         fireSuccessMessage(data.message);
 
          setTimeout(function() {

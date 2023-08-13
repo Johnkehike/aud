@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
@@ -44,5 +45,8 @@ public class Users {
 
     @Column(name = "created_by")
     private String createdBy;
+
+    @Column(name = "date_created")
+    private LocalDateTime dateCreated;
 
 }

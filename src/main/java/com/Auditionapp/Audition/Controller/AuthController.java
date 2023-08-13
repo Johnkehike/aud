@@ -46,15 +46,12 @@ public class AuthController {
 
 
     @GetMapping("/signup/{producer}")
-    private String viewSignup(@PathVariable("producer") String producer, Model model, HttpSession session) {
+    public String viewSignup(@PathVariable("producer") String producer, Model model, HttpSession session) {
 
         Users user = usersRepository.findByName(producer);
         String fullNameProducer = user.getFullName();
         List<Events> eventList =  eventsRepository.findEventsByProducerAndStatus(fullNameProducer, "AUDITION");
 
-//        String[] options = eventList.getRoles().split(",");
-
-//         model.addAttribute("options", options);
          model.addAttribute("producer", fullNameProducer);
          model.addAttribute("eventList", eventList);
 

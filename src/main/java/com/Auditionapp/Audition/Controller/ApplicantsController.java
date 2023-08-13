@@ -26,6 +26,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +55,8 @@ public class ApplicantsController {
 
     @Value("${homePage}")
     private String homePage;
+    @Value("${openJobs}")
+    private String openJobs;
 
     @Value("${applicantUploadPath}")
     private String applicantUploadPath;
@@ -107,8 +111,14 @@ public class ApplicantsController {
 
         Applicants applicants1 = applicantRepository.findByEmail(email);
         Users userCheck = usersRepository.findByFullName(producer);
+        Users checkApplicant = usersRepository.findByEmail(email);
         if(applicants1 != null) {
             redirectAttributes.addFlashAttribute("status", "Applicant already applied for an event");
+            return "redirect:/signup/"+producer;
+        }
+
+        if(checkApplicant != null) {
+            redirectAttributes.addFlashAttribute("status", "Applicant email already exists");
             return "redirect:/signup/"+producer;
         }
 
@@ -119,7 +129,8 @@ public class ApplicantsController {
                 Path directoryPath = Paths.get(imagePath);
                 Files.createDirectories(directoryPath); // Create the directory if it doesn't exist
 
-                String customFileName = file.getOriginalFilename() + getExtension(file.getOriginalFilename());
+//                String customFileName = file.getOriginalFilename() + getExtension(file.getOriginalFilename());
+                String customFileName = file.getOriginalFilename();
                 Path filePath = directoryPath.resolve(customFileName);
 
 
@@ -144,19 +155,30 @@ public class ApplicantsController {
             users.setFullName(fullName);
             users.setName(fullName.replace(" ", "").toLowerCase()+id);
             users.setCreatedBy(userCheck.getFullName());
+            users.setDateCreated(LocalDateTime.now());
 
             applicants.setUserName(users.getName());
 
             Users users1 = usersRepository.save(users);
 
-            applicants.setApplicantId(users1.getUserId());
+            applicants.setUserId(users1.getUserId());
+            applicants.setDateApplied(LocalDateTime.now());
             applicantRepository.save(applicants);
 
             String htmlContent = "<html><body>" +
-                    "<p>Hi " + users.getName() + ",</p>" +
-                    "<p>You have been profiled successfully on Gian Carlo Auditioning app. </p>" +
-                    "<p>Please use your User ID and your created password below to login </p>"
-                    +"<p> You can login using this url "+ homePage + "</p>"+
+                    "<p>Dear " + users.getFullName() + ",</p>" +
+                    "<p>You have successfully applied to: </p>" +
+                    "<p>Producer: "+applicants.getProducerName()+"</p>" +
+                    "<p>Event: "+applicants.getEventName()+"</p>" +
+                    "<p>Premier Date: "+dateOfEvent+"</p>" +
+                    "<p>Role: "+roleApplied+"</p>" +
+                    "<p>You submitted "+files.size()+" files in total</p>" +
+                    "<p>Your username is "+users.getName()+" </p>" +
+                    "<p>Your password is "+password+" </p>" +
+                    "<p>Please upload a personal picture on our portal https://www.myauditions.us</p>" +
+                    "<p>Producer "+applicants.getProducerName()+ " will email you with any news about this event and your application</p>"
+                    +"<p>Thank you for using our platform "+ homePage + "</p>"+
+                    "<p>Feel free to use this URL "+ openJobs + " to explore more possibilities for you and your career</p>"+
                     "</body></html>";
 
             String htmlContentToProducer = "<html><body>" +
@@ -217,7 +239,8 @@ public class ApplicantsController {
     @PostMapping("/download")
     public ResponseEntity<byte[]> downloadApplicantsData(@RequestParam("eventName") String eventName, @RequestParam("applicantName") String applicantName) {
 
-        String folderPath = "C:" + File.separator + eventName + File.separator + applicantName;
+//        String folderPath = "C:" + File.separator + eventName + File.separator + applicantName;
+        String folderPath = "/home3/myauditi/etc/myauditions.us/" + eventName + "/" + applicantName;
 
         try {
             // Create a temporary file to store the zipped folder
@@ -333,5 +356,105 @@ public class ApplicantsController {
         return "redirect:/web/viewApplicants";
 
     }
+
+
+    @PostMapping("/apply")
+    public String applyApplicant(@RequestParam("files") List<MultipartFile> files,
+                                @RequestParam("message") String message,
+                                @RequestParam("events") String events,
+                                @RequestParam("producer") String producer, @RequestParam("date") String dateOfEvent,
+                                @RequestParam("roles") String roleApplied, Applicants applicants,
+                                RedirectAttributes redirectAttributes, HttpSession session) {
+
+        String id = RandomGenertor.generateNumericRef(3);
+        Users userProfile = (Users) session.getAttribute("userprofile");
+
+
+        Applicants applicants1 = applicantRepository.findByEmailAndEventName(userProfile.getEmail(),events);
+        Users userCheck = usersRepository.findByFullName(producer);
+        Users checkApplicant = usersRepository.findByEmail(userProfile.getEmail());
+        if(applicants1 != null) {
+            redirectAttributes.addFlashAttribute("status", "You applied for the "+events+ " event. Please apply for a different event");
+            return "redirect:/web/openjobs";
+        }
+
+        if(checkApplicant == null) {
+            redirectAttributes.addFlashAttribute("status", "Please create an account first");
+            return "redirect:/signup/"+producer;
+        }
+
+        try {
+            for(MultipartFile file : files) {
+                byte[] bytes = file.getBytes();
+                String imagePath = applicantUploadPath+events+"/"+checkApplicant.getFullName();
+                Path directoryPath = Paths.get(imagePath);
+                Files.createDirectories(directoryPath); // Create the directory if it doesn't exist
+
+//                String customFileName = file.getOriginalFilename() + getExtension(file.getOriginalFilename());
+                String customFileName = file.getOriginalFilename();
+                Path filePath = directoryPath.resolve(customFileName);
+
+
+                Files.write(filePath, bytes);
+                log.info("Files Successfully uploaded to the drive");
+            }
+
+            applicants.setApplicantRole(roleApplied);
+            applicants.setApplicantName(checkApplicant.getFullName());
+            applicants.setEventName(events);
+            applicants.setProducerName(producer);
+            applicants.setEmail(checkApplicant.getEmail());
+            applicants.setPhone(checkApplicant.getPhone_number());
+            applicants.setMessage(message);
+            applicants.setSelectionStatus(ApplicantSelection.valueOf("PENDING"));
+            applicants.setTheaterDirector(userCheck.getCreatedBy());
+            applicants.setDateApplied(LocalDateTime.now());
+
+
+            applicants.setUserName(checkApplicant.getName());
+
+            applicants.setUserId(checkApplicant.getUserId());
+            applicantRepository.save(applicants);
+
+            String htmlContent = "<html><body>" +
+                    "<p>Dear " + userProfile.getFullName() + ",</p>" +
+                    "<p>You have successfully applied to: </p>" +
+                    "<p>Producer: "+applicants.getProducerName()+"</p>" +
+                    "<p>Event: "+applicants.getEventName()+"</p>" +
+                    "<p>Premier Date: "+dateOfEvent+"</p>" +
+                    "<p>Role: "+roleApplied+"</p>" +
+                    "<p>You submitted "+files.size()+" files in total</p>" +
+                    "<p>Please upload a personal picture on our portal https://www.myauditions.us</p>" +
+                    "<p>Producer "+applicants.getProducerName()+ " will email you with any news about this event and your application</p>"
+                    +"<p>Thank you for using our platform "+ homePage + "</p>"+
+                    "<p>Feel free to use this URL "+ openJobs + " to explore more possibilities for you and your career</p>"+
+                    "</body></html>";
+
+            String htmlContentToProducer = "<html><body>" +
+                    "<p>Hi " + producer + ",</p>" +
+                    "<p>You have a new applicant applying for the role of "+roleApplied+". </p>" +
+                    "<p>Please see message sent to you below by the applicant and login to view uploaded files </p>"
+                    +"<p><b>"+message+"</b></p>"+
+                    "</body></html>";
+
+            try {
+                SendMail(checkApplicant.getEmail(), "Application Notification", htmlContent);
+                SendMail(userCheck.getEmail(), "Application Notification", htmlContentToProducer);
+            }
+            catch(Exception e) {
+                log.info("Exception experienced is "+e.getMessage());
+            }
+
+            redirectAttributes.addFlashAttribute("status", "Records Saved Successfully. Please login");
+            return "redirect:/home";
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("status", "Failed to save records, try again");
+            return "redirect:/signup/"+producer;
+        }
+
+    }
+
 
 }
