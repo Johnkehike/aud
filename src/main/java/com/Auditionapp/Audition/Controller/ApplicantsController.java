@@ -312,6 +312,37 @@ public class ApplicantsController {
 
             responseMessage.setMessage("Score updated successfully");
             responseMessage.setCode("00");
+            String htmlContentToApplicant;
+
+            if(!applicants1.getSelectionStatus().equals("SELECTED")) {
+                 htmlContentToApplicant = "<html><body>" +
+                        "<p>Hi " + applicants1.getApplicantName() + ",</p>" +
+                        "<p>Sorry! you were not selected for the role" +applicants1.getApplicantRole()+ " you applied for at  " + applicants1.getEventName() + ",</p>" +
+                        "<p>Please see score for the event  " + applicants1.getEventName() + " you applied for. </p>" +
+                        "<p>Score:  " + applicants1.getApplicantScore() + ". </p>" +
+                        "<p>Status  " + applicants1.getSelectionStatus() + ". </p>" +
+                        "</body></html>";
+            }
+
+            else {
+                 htmlContentToApplicant = "<html><body>" +
+                        "<p>Hi " + applicants1.getApplicantName() + ",</p>" +
+                        "<p>Congratulations! you have been selected for the role" +applicants1.getApplicantRole()+ " you applied for at  " + applicants1.getEventName() + ",</p>" +
+                        "<p>Please see score for the event  " + applicants1.getEventName() + " you applied for. </p>" +
+                        "<p>Score:  " + applicants1.getApplicantScore() + ". </p>" +
+                        "<p>Status  " + applicants1.getSelectionStatus() + ". </p>" +
+                        "</body></html>";
+            }
+
+
+
+            try {
+                SendMail(applicants1.getEmail(), "Application Notification", htmlContentToApplicant);
+            }
+
+            catch(Exception e) {
+                log.info("Exception experienced is "+e.getMessage());
+            }
 
             return new ResponseEntity<>(responseMessage, HttpStatus.OK);
         }
@@ -409,10 +440,7 @@ public class ApplicantsController {
             applicants.setSelectionStatus(ApplicantSelection.valueOf("PENDING"));
             applicants.setTheaterDirector(userCheck.getCreatedBy());
             applicants.setDateApplied(LocalDateTime.now());
-
-
             applicants.setUserName(checkApplicant.getName());
-
             applicants.setUserId(checkApplicant.getUserId());
             applicantRepository.save(applicants);
 

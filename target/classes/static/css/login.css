@@ -9,6 +9,15 @@ body{
 .clearfix:after{clear:both;display:block}
 a{color:inherit;text-decoration:none}
 
+
+#otp-section {
+    display: none;
+}
+
+#password-section {
+    display: none;
+}
+
 .login-wrap{
 	width:100%;
 	margin:auto;

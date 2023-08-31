@@ -60,7 +60,7 @@
 
 
     <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Sign In</label>
-    <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
+    <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Forgot Password</label>
     <div class="login-form">
       <form id="login-form">
       <div class="sign-in-htm">
@@ -89,29 +89,53 @@
       </div>
       <div class="sign-up-htm">
         <form id="signup-form">
-        <div class="group">
-          <label for="user" class="label">Username</label>
-          <input id="user" type="text" class="input">
-        </div>
-        <div class="group">
-          <label for="pass" class="label">Password</label>
-          <input id="pass" type="password" class="input" data-type="password">
-        </div>
-        <div class="group">
-          <label for="pass" class="label">Repeat Password</label>
-          <input id="pass2" type="password" class="input" data-type="password">
-        </div>
-        <div class="group">
+        <div class="group" id="email-section">
           <label for="pass" class="label">Email Address</label>
           <input id="emailAddress" type="text" class="input">
         </div>
-        <div class="group">
-          <input type="submit" id="submit-signup" class="button" value="Sign Up">
-          <img id="loader2" src="/img/loader.gif" style="display:none;position:relative;">
-          <span id="span-sign-up-message" class="message"></span>
+
+          <div class="group">
+            <input type="submit" id="validate-email" class="button" value="Validate Email">
+            <img id="loader3" src="/img/loader.gif" style="display:none;position:relative;">
+            <span id="email-validation-message" class="message"></span>
+
+          </div>
 
 
-        </div>
+          <div id="otp-section">
+          <div class="group">
+            <label for="otp" class="label">Enter OTP</label>
+            <input id="otp" type="text" class="input" data-type="text">
+          </div>
+
+          <div class="group">
+            <input type="submit" id="validate-otp" class="button" value="Validate OTP">
+            <img id="loader4" src="/img/loader.gif" style="display:none;position:relative;">
+            <span id="otp-validation-message" class="message"></span>
+
+          </div>
+
+          </div>
+
+          <div id="password-section">
+          <div class="group">
+            <label for="pass" class="label">New Password</label>
+            <input id="pass" type="password" class="input" data-type="password">
+          </div>
+          <div class="group">
+            <label for="pass" class="label">Repeat Password</label>
+            <input id="pass2" type="password" class="input" data-type="password">
+          </div>
+
+            <div class="group">
+              <input type="submit" id="change-password" class="button" value="Reset Password">
+              <img id="loader2" src="/img/loader.gif" style="display:none;position:relative;">
+              <span id="span-sign-up-message" class="message"></span>
+            </div>
+
+
+          </div>
+
         </form>
         <div class="hr"></div>
         <div class="foot-lnk">

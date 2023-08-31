@@ -1,7 +1,9 @@
 package com.Auditionapp.Audition.Controller;
 
 import com.Auditionapp.Audition.Entity.*;
+import com.Auditionapp.Audition.Helpers.RandomGenertor;
 import com.Auditionapp.Audition.Repository.EventsRepository;
+import com.Auditionapp.Audition.Repository.OtpRepository;
 import com.Auditionapp.Audition.Repository.UsersRepository;
 import com.Auditionapp.Audition.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -31,6 +35,13 @@ public class AuthController {
 
     @Autowired
     private EventsRepository eventsRepository;
+
+    @Autowired
+    private OtpRepository otpRepository;
+
+    @Autowired
+    ApplicantsController applicantsController;
+
 
 
 
@@ -161,8 +172,116 @@ public class AuthController {
         }
 
 
+    }
+
+
+    @PostMapping("/validate-email")
+    public ResponseEntity<?> validateEmail(@RequestBody Users users, ResponseMessage responseMessage, OtpModel otpModel) {
+
+        Users userDB = usersRepository.findByEmail(users.getEmail());
+
+        if (userDB == null) {
+            log.info("Email does not exist");
+            responseMessage.setCode("96");
+            responseMessage.setMessage("Email does not exist");
+        }
+
+        else {
+            log.info("Email exist and OTP will be sent");
+
+            String otp = RandomGenertor.generateNumericRef(6);
+            otpModel.setOtp(otp);
+            otpModel.setStatus("Pending");
+            otpModel.setUsername(userDB.getFullName());
+            otpModel.setSendTime(LocalDateTime.now());
+            otpModel.setEmail(users.getEmail());
+
+            OtpModel otpModel1 = otpRepository.findByEmailAndStatus(userDB.getEmail(), "Pending");
+            if(otpModel1 != null) {
+                otpModel1.setStatus("Expired");
+                otpRepository.save(otpModel1);
+            }
+
+
+            String otpMessageToUser = "<html><body>" +
+                    "<p>Hi " + userDB.getFullName() + ",</p>" +
+                    "<p>You tried resetting your password</p>" +
+                    "<p>Please use below OTP to complete your password reset. </p>" +
+                    "<p>OTP would become invalid in 10 minutes</p>"
+                    +"<p><b>OTP: "+otp+"</b></p>"+
+                    "</body></html>";
+
+            applicantsController.SendMail(users.getEmail(), "Password Reset OTP",otpMessageToUser);
+            otpRepository.save(otpModel);
+
+            responseMessage.setCode("00");
+            responseMessage.setMessage("OTP Sent to your email successfully");
+
+        }
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
 
 
     }
+
+
+    @PostMapping("/validate-otp")
+    public ResponseEntity<?> validateOtp(@RequestBody OtpModel otpModel, ResponseMessage responseMessage, Users users) {
+
+
+        OtpModel otp = otpRepository.findByEmailAndStatus(otpModel.getEmail(), "Pending");
+
+        if(otp == null) {
+            responseMessage.setCode("99");
+            responseMessage.setMessage("Invalid OTP");
+        }
+
+        else if(!otp.getStatus().equals("Pending")) {
+            responseMessage.setCode("96");
+            responseMessage.setMessage("OTP have been used");
+        }
+
+
+        else {
+            Duration duration = Duration.between(LocalDateTime.now(), otp.getSendTime());
+            long minutes = duration.toMinutes() % 60;
+
+            if(minutes >= 10L) {
+                responseMessage.setCode("97");
+                responseMessage.setMessage("OTP have expired");
+            }
+            else {
+                responseMessage.setCode("00");
+                responseMessage.setMessage("Successfully validated OTP");
+                otp.setStatus("Used");
+                otp.setValidationTime(LocalDateTime.now());
+                otpRepository.save(otp);
+            }
+
+        }
+
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+
+    }
+
+
+
+
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@RequestBody Users users, ResponseMessage responseMessage) {
+
+
+        Users users1 = usersRepository.findByEmail(users.getEmail());
+        users1.setPassword(users.getPassword());
+        usersRepository.save(users1);
+
+        responseMessage.setCode("00");
+        responseMessage.setMessage("Password changed. Please login.");
+
+        return new ResponseEntity<>(responseMessage, HttpStatus.OK);
+
+    }
+
+
 
 }

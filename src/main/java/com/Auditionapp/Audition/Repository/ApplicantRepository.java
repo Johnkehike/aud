@@ -41,4 +41,7 @@ public interface ApplicantRepository extends JpaRepository<Applicants, Long> {
     @Query("SELECT DISTINCT a FROM Applicants a JOIN Events e ON a.eventName = e.eventName WHERE e.status = :status AND e.producers LIKE CONCAT('%', :producer, '%')")
     List<Applicants> findApplicantsForProducers(@Param("status") Status status, @Param("producer") String producer);
 
+    @Query(value = "SELECT * FROM applicants WHERE applicant_name = :applicant", nativeQuery = true)
+    List<Applicants> findEventsForApplicants(@Param("applicant") String applicant);
+
 }

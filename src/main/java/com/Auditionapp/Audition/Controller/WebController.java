@@ -60,22 +60,28 @@ public class WebController {
 
         Users userProfile = (Users) session.getAttribute("userprofile");
         int countEvents;
+        int countApplicants;
 
 
-        int countDirectors = usersRepository.countRoles("DIRECTOR");
-        int countProducers = usersRepository.countRoles("PRODUCER");
-        int countApplicants = usersRepository.countRoles("USER");
-        Applicants applicants = applicantRepository.findByEmail(userProfile.getEmail());
+        int countDirectors = usersRepository.countRoles2("DIRECTOR", userProfile.getFullName());
+        int countProducers = usersRepository.countRoles2("PRODUCER", userProfile.getFullName());
+        countApplicants = usersRepository.countRoles2("USER", userProfile.getFullName());
+//        Applicants applicants = applicantRepository.findByEmail(userProfile.getEmail());
 
         if((String)session.getAttribute("userRole") == "USER") {
-            model.addAttribute("score", applicants.getApplicantScore());
-            model.addAttribute("status", applicants.getSelectionStatus());
+//            model.addAttribute("score", applicants.getApplicantScore());
+//            model.addAttribute("status", applicants.getSelectionStatus());
+            List<Applicants> events3 = applicantRepository.findEventsForApplicants(userProfile.getFullName());
+            countEvents = events3.size();
+            model.addAttribute("totalEvents", countEvents);
+
         }
 
         if((String)session.getAttribute("userRole") == "DIRECTOR") {
             List<Events> events = eventsRepository.findByDirectorUserId(userProfile.getFullName());
             countEvents = events.size();
             model.addAttribute("totalEvents", countEvents);
+
         }
 
         if((String)session.getAttribute("userRole") == "PRODUCER") {
@@ -84,6 +90,22 @@ public class WebController {
             model.addAttribute("totalEvents", countEvents);
 
         }
+
+        if((String)session.getAttribute("userRole") == "ADMIN") {
+            List<Events> events2 = eventsRepository.findAll();
+            countEvents = events2.size();
+            model.addAttribute("totalEvents", countEvents);
+
+        }
+
+
+
+//        if((String)session.getAttribute("userRole") == "USER") {
+//            List<Applicants> events3 = applicantRepository.findEventsForApplicants(userProfile.getFullName());
+//            countEvents = events3.size();
+//            model.addAttribute("totalEvents", countEvents);
+//
+//        }
 
 
 
@@ -301,12 +323,12 @@ public class WebController {
 
 
 
-        if (!file.getContentType().equals("image/jpeg")) {
-            log.info("Only JPEG format is allowed.");
-            redirectAttributes.addFlashAttribute("success", "Only JPEG format is allowed.");
-
-            return "redirect:/web/profile";
-        }
+//        if (!file.getContentType().equals("image/jpeg")) {
+//            log.info("Only JPEG format is allowed.");
+//            redirectAttributes.addFlashAttribute("success", "Only JPEG format is allowed.");
+//
+//            return "redirect:/web/profile";
+//        }
 
         try {
             byte[] bytes = file.getBytes();

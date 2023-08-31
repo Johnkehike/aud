@@ -22,6 +22,9 @@ public interface UsersRepository extends JpaRepository<Users, Long> {
     @Query(value = "SELECT COUNT(*) FROM users WHERE role = :role", nativeQuery = true)
     int countRoles(@Param("role") String role);
 
+    @Query(value = "SELECT COUNT(*) FROM users WHERE role = :role AND created_by = :created", nativeQuery = true)
+    int countRoles2(@Param("role") String role, @Param("created") String created_by);
+
 
     Users findByEmail(String email);
 

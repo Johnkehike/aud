@@ -97,5 +97,215 @@
 
 
 
+                $('#validate-email').on('click', function(event) {
+
+                  event.preventDefault(); // prevent the default form submission
+
+                  var emailAddress = $('#emailAddress').val();
+
+                  $('#validate-email').hide();
+                  $('#loader3').show();
+
+
+                  var registrationReq = {};
+                  registrationReq.email= emailAddress;
+
+                  var req = JSON.stringify(registrationReq);
+                  // send the AJAX request
+                  $.ajax({
+
+                     headers: {
+                       'Accept': 'application/json',
+                       'Content-Type': 'application/json'
+                     },
+                    url: '/validate-email', // replace with the URL of your Spring Boot backend login endpoint
+                    method: 'post',
+                    data: req,
+                    success: function(data) {
+                    $('#loader3').hide();
+
+                    if(data.code == '00'){
+
+
+                      $('#otp-section').show();
+                      $('#email-section').hide();
+                      $('#email-validation-message').html(data.message)
+                      .fadeIn(300)
+                      .delay(4000)
+                      .fadeOut(300, function() { $(this).remove();});
+                      }
+
+                      else {
+
+                      $('#validate-email').show();
+
+                      $('#email-validation-message').html(data.message)
+                      .fadeIn(300)
+                      .delay(4000)
+                      .fadeOut(300, function() { $(this).remove();});
+
+                      }
+
+                    },
+
+                    error: function(jqXHR, textStatus, errorThrown) {
+
+                      // display error message to the user
+                      $('#loader3').hide();
+                      $('#validate-email').show();
+
+                      $('#email-validation-message').html('Error experienced while validating email')
+                      .fadeIn(300)
+                      .delay(4000)
+                      .fadeOut(300, function() { $(this).remove();});
+
+                    }
+                  });
+
+                      });
+
+
+
+
+
+
+                $('#validate-otp').on('click', function(event) {
+
+                  event.preventDefault(); // prevent the default form submission
+
+                  var emailAddress = $('#emailAddress').val();
+                  var otp = $('#otp').val();
+
+                  $('#validate-otp').hide();
+                  $('#loader4').show();
+
+
+                  var registrationReq = {};
+                  registrationReq.email= emailAddress;
+                  registrationReq.otp= otp;
+
+                  var req = JSON.stringify(registrationReq);
+                  // send the AJAX request
+                  $.ajax({
+
+                     headers: {
+                       'Accept': 'application/json',
+                       'Content-Type': 'application/json'
+                     },
+                    url: '/validate-otp', // replace with the URL of your Spring Boot backend login endpoint
+                    method: 'post',
+                    data: req,
+                    success: function(data) {
+                    $('#loader4').hide();
+
+                    if(data.code == '00'){
+                      $('#password-section').show();
+                      $('#otp-section').hide();
+                      }
+
+                      else {
+
+                      $('#validate-otp').show();
+
+                      $('#otp-validation-message').html(data.message)
+                      .fadeIn(300)
+                      .delay(4000)
+                      .fadeOut(300, function() { $(this).remove();});
+
+                      }
+
+                    },
+
+                    error: function(jqXHR, textStatus, errorThrown) {
+
+                      // display error message to the user
+                      $('#loader4').hide();
+                      $('#validate-otp').show();
+
+                      $('#otp-validation-message').html('Error experienced while validating OTP')
+                      .fadeIn(300)
+                      .delay(4000)
+                      .fadeOut(300, function() { $(this).remove();});
+
+                    }
+                  });
+
+                      });
+
+
+
+
+
+
+
+
+                $('#change-password').on('click', function(event) {
+
+                  event.preventDefault(); // prevent the default form submission
+
+                  var emailAddress = $('#emailAddress').val();
+                  var password = $('#pass').val();
+
+                  $('#change-password').hide();
+                  $('#loader2').show();
+
+
+                  var registrationReq = {};
+                  registrationReq.email= emailAddress;
+                  registrationReq.password= password;
+
+                  var req = JSON.stringify(registrationReq);
+                  // send the AJAX request
+                  $.ajax({
+
+                     headers: {
+                       'Accept': 'application/json',
+                       'Content-Type': 'application/json'
+                     },
+                    url: '/reset-password', // replace with the URL of your Spring Boot backend login endpoint
+                    method: 'post',
+                    data: req,
+                    success: function(data) {
+                    $('#loader2').hide();
+
+                    if(data.code == '00'){
+
+                                          $('#span-sign-up-message').html(data.message)
+                                          .fadeIn(300)
+                                          .delay(4000)
+                                          .fadeOut(300, function() { $(this).remove();});
+
+                      }
+
+                      else {
+
+                      $('#change-password').show();
+
+                      $('#span-sign-up-message').html(data.message)
+                      .fadeIn(300)
+                      .delay(4000)
+                      .fadeOut(300, function() { $(this).remove();});
+
+                      }
+
+                    },
+
+                    error: function(jqXHR, textStatus, errorThrown) {
+
+                      // display error message to the user
+                      $('#loader2').hide();
+                      $('#change-password').show();
+
+                      $('#span-sign-up-message').html('Error experienced while validating OTP')
+                      .fadeIn(300)
+                      .delay(4000)
+                      .fadeOut(300, function() { $(this).remove();});
+
+                    }
+                  });
+
+                      });
+
+
 
 
