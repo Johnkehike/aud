@@ -18,6 +18,10 @@ a{color:inherit;text-decoration:none}
     display: none;
 }
 
+span {
+color: white;
+}
+
 .login-wrap{
 	width:100%;
 	margin:auto;
@@ -50,11 +54,7 @@ a{color:inherit;text-decoration:none}
 .login-form .group .check{
 	display:none;
 }
-.login-html .tab,
-.login-form .group .label,
-.login-form .group .button{
-	text-transform:uppercase;
-}
+
 .login-html .tab{
 	font-size:22px;
 	margin-right:15px;

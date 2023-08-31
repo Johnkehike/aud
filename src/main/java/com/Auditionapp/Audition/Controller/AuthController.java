@@ -272,7 +272,10 @@ public class AuthController {
 
 
         Users users1 = usersRepository.findByEmail(users.getEmail());
-        users1.setPassword(users.getPassword());
+
+        String hashed_password = BCrypt.hashpw(users.getPassword(), BCrypt.gensalt());
+        users1.setPassword(hashed_password);
+
         usersRepository.save(users1);
 
         responseMessage.setCode("00");

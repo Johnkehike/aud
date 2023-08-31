@@ -15,11 +15,13 @@ C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Helpers\Token.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Repository\UsersRepository.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Entity\Applicants.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Config\AppInterceptor.java
+C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Entity\OtpModel.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Helpers\RandomGenertor.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Controller\UserController.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Entity\ResponseMessage.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Helpers\QRCodeGenerator.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Entity\ApplicantSelection.java
+C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Repository\OtpRepository.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Entity\Roles.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Config\WebSecurityConfig.java
 C:\Projects\Audition\src\main\java\com\Auditionapp\Audition\Entity\Users.java

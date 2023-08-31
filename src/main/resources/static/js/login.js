@@ -17,8 +17,6 @@
 
 
 
-
-
         $('#signup-form').on('submit', function(event) {
 
           event.preventDefault(); // prevent the default form submission
@@ -100,6 +98,7 @@
                 $('#validate-email').on('click', function(event) {
 
                   event.preventDefault(); // prevent the default form submission
+                 $('#emailAddress').attr('disabled', true);
 
                   var emailAddress = $('#emailAddress').val();
 
@@ -138,6 +137,8 @@
                       else {
 
                       $('#validate-email').show();
+                      $('#emailAddress').attr('disabled', false);
+
 
                       $('#email-validation-message').html(data.message)
                       .fadeIn(300)
@@ -153,6 +154,8 @@
                       // display error message to the user
                       $('#loader3').hide();
                       $('#validate-email').show();
+                      $('#emailAddress').attr('disabled', false);
+
 
                       $('#email-validation-message').html('Error experienced while validating email')
                       .fadeIn(300)
