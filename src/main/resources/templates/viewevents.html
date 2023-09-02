@@ -425,6 +425,13 @@ font-size: small;
                   <span class="hide-menu">Create New Event</span>
 
                 </a>
+
+                <a href="#" id="create-url" class="btn btn-group-sm">
+                  <i class="fas fa-plus" aria-hidden="true"></i>
+                  <span class="hide-menu">Get URL for Applicants</span>
+                </a>
+                <img id="loader3" src="/img/loader.gif" style="display:none;position:relative;">
+
               </div>
 
 
@@ -453,8 +460,8 @@ font-size: small;
                           <input type="text" class="form-control long-input" id="field3" placeholder="Start Date" />
                         </div>
                         <div class="form-group">
-                          <label for="field4">Producers</label>
-                          <input type="text" class="form-control" id="field4" placeholder="Producers" disabled />
+                          <label for="field4">Producer</label>
+                          <input type="text" class="form-control" id="field4" placeholder="Producer" disabled />
                         </div>
                         <div class="form-group">
                           <label for="field5">Status</label>
@@ -524,6 +531,28 @@ font-size: small;
 
 
 
+
+
+        <div class="modal fade" id="UrlModal" tabindex="-1" role="dialog" aria-labelledby="UrlModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="UrlModalLabel">URL</h5>
+                <button type="button" id="url-page" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                  <!--                      <span aria-hidden="true">&times;</span>-->
+                </button>
+              </div>
+
+              <div id="url-contents" class="modal-body">
+                <form class="needs-validation" id="UrlForm">
+
+
+
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
 
@@ -616,6 +645,62 @@ $(document).ready(function() {
       }
     } // customize the pagination button labels
   });
+
+
+  $('#url-page').click(function(e) {
+
+
+      $('#alert-url').remove();
+      $('#appendedImage').remove();
+
+  });
+
+
+  $('#create-url').click(function(e) {
+
+    e.preventDefault();
+
+   $('#loader3').show();
+
+   // send the AJAX request
+   $.ajax({
+
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+     url: '/applicants/getUrl',
+     method: 'post',
+     success: function(data) {
+
+       $('#loader3').hide();
+
+       $('#UrlForm').prepend('<div class="alert alert-info text-center border border-info" id="alert-url">' + data.message + '</div>');
+
+       // create image tag and set its source to the base64 encoded image data
+       var imgTag = $('<img>', {
+         src: 'data:image/png;base64,' + data.qrCodeImage,
+         alt: 'QR Code Image',
+         id: 'appendedImage'
+       });
+
+       // append image tag to the page
+       $('#UrlForm').append(imgTag);
+       $('#UrlModal').modal('show');
+
+     },
+     error: function(jqXHR, textStatus, errorThrown) {
+
+       // display error message to the user
+       $('#loader3').hide();
+        fireErrorMessage("Error", "Failed to generate URL");
+     }
+
+
+    });
+
+});
+
 
 
   $('.view-details').click(function(e) {

@@ -141,7 +141,7 @@
                         <div class="name">Upload Files</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="file" accept=".jpg,.jpeg,.mp4,.mp3" multiple="multiple" name="files" required>
+                                <input class="input--style-5" type="file" multiple="multiple" name="files" required>
                             </div>
                         </div>
                     </div>
@@ -203,7 +203,6 @@
 <script>
 
     function findEvents() {
-        console.log('I am in the method');
 
         var event = $("#events option:selected").val();
 
@@ -224,6 +223,7 @@
             data: req,
             success: function (data) {
 
+                $("#roles option:not(:first-child)").remove();
                 $("#datePremiere").val(data.startDate);
                 var options = data.roles.split(",");
                 for(var i = 0; i < options.length; i++) {

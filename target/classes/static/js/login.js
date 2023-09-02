@@ -22,8 +22,8 @@
           event.preventDefault(); // prevent the default form submission
 
           var user = $('#user').val();
-          var pass = $('#user').val();
-          var pass2 = $('#user').val();
+          var pass = $('#pass').val();
+          var pass2 = $('#pass2').val();
           var emailAddress = $('#emailAddress').val();
 
           if(pass != pass2) {
@@ -64,6 +64,10 @@
               .fadeIn(300)
               .delay(4000)
               .fadeOut(300, function() { $(this).remove();});
+
+               setTimeout(function() {
+                  location.reload();
+               }, 1000);
               }
 
               else {
@@ -273,10 +277,17 @@
 
                     if(data.code == '00'){
 
+                                   $('#pass').val('');
+                                   $('#pass2').val('');
+
                                           $('#span-sign-up-message').html(data.message)
                                           .fadeIn(300)
                                           .delay(4000)
                                           .fadeOut(300, function() { $(this).remove();});
+
+                                          setTimeout(function() {
+                                            location.reload();
+                                          }, 1000);
 
                       }
 
