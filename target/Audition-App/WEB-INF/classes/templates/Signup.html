@@ -24,6 +24,15 @@
 
     <!-- Main CSS-->
     <link href="/css/main.css" rel="stylesheet" media="all">
+
+    <style>
+        .disabled-button {
+            background-color: #ccc; /* Gray background color */
+            color: #888; /* Gray text color */
+            cursor: not-allowed; /* Show a "not-allowed" cursor */
+}
+
+    </style>
 </head>
 
 <body>
@@ -141,7 +150,8 @@
                         <div class="name">Upload Files</div>
                         <div class="value">
                             <div class="input-group">
-                                <input class="input--style-5" type="file" multiple="multiple" name="files" required>
+                                <input class="input--style-5" type="file" id="fileInput" multiple="multiple" name="files" required>
+                                <span id="file-upload-message" class="message">Total uploaded files should be 100MB or less and each file should be 10MB max</span>
                             </div>
                         </div>
                     </div>
@@ -181,7 +191,7 @@
                         </div>
                     </div>
                     <div>
-                        <button class="btn btn--radius-2 btn--red" type="submit">Apply!</button>
+                        <button id="submitButton" class="btn btn--radius-2 btn--red disabled-button" type="submit">Apply!</button>
                     </div>
                 </form>
             </div>
@@ -244,6 +254,43 @@
 
     }
 
+
+
+  const fileInput = document.getElementById('fileInput');
+  const message = document.querySelector('#file-upload-message');
+  const submitButton = document.querySelector('#submitButton');
+
+  fileInput.addEventListener('change', () => {
+    const selectedFiles = fileInput.files;
+    let totalSize = 0;
+    let exceeds10MB = false;
+
+    // Calculate the total size of selected files and check for individual file sizes
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const fileSizeMB = selectedFiles[i].size / (1024 * 1024);
+      totalSize += selectedFiles[i].size;
+
+      if (fileSizeMB > 10) {
+        exceeds10MB = true;
+        break; // No need to continue checking if one file exceeds 10MB
+      }
+    }
+
+    // Convert totalSize to MB
+    const totalSizeMB = totalSize / (1024 * 1024);
+
+    // Check if total size exceeds 100MB or if any file exceeds 10MB
+    if (totalSizeMB > 100 || exceeds10MB) {
+      message.style.display = 'block';
+      submitButton.disabled = true;
+       submitButton.classList.add('disabled-button');submitButton.classList.add('disabled-button');
+    } else {
+      message.style.display = 'none';
+      submitButton.disabled = false;
+      submitButton.classList.remove('disabled-button');
+
+    }
+  });
 </script>
 
 </body>
