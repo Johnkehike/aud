@@ -13,7 +13,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>estate</name>
 	<description>Estate Webpage for visitors</description>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<properties>
 			<start-class>com.cottonconnect.elearning.ELearning.ELearningApplication</start-class>
 			<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
