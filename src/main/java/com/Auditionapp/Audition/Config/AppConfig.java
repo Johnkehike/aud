@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 
     @Configuration
-    @ComponentScan(basePackages = {"com.Estateapp.estate"})
+    @ComponentScan(basePackages = {"com.Auditionapp.Audition"})
     public class AppConfig extends WebMvcConfigurationSupport {
 
 
